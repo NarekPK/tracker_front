@@ -1,4 +1,4 @@
-# tracker (tracker_front)
+# tracker
 http://79.174.82.97:9000/
 
 tracker
