@@ -1,45 +1,45 @@
 <template>
-  <div class="roles-wrapper">
-    <div class="roles-title q-pa-sm q-mb-sm text-h5 text-weight-bold">{{ `Ролей: ${roles.length}` }}</div>
+  <div class="projects-wrapper">
+    <div class="projects-title q-pa-sm q-mb-sm text-h5 text-weight-bold">{{ `Проектов: ${projects.length}` }}</div>
     <q-table
       flat
-      :rows="roles"
+      :rows="projects"
       :columns="columns"
-      row-key="name"
+      row-key="project_id"
       selection="single"
       v-model:selected="selected"
       title-class="primary"
       color="primary"
-      class="roles-table"
-      table-header-class="roles-table-header"
+      class="projects-table"
+      table-header-class="projects-table-header"
       :rows-per-page-options="[10]"
     >
       <template v-slot:body-cell-name="props">
         <q-td :props="props">
           <router-link
-            :to="`/role/${props.row.role_id}`"
+            :to="`/project/${props.row.project_id}`"
             color="primary"
-            class="roles-link text-subtitle1"
+            class="projects-link text-subtitle1"
           >
-              {{ props.row.name }}
+            {{ props.row.name }}
           </router-link>
         </q-td>
       </template>
     </q-table>
 
-    <q-btn label="Новая роль" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewRoleDialog = true" />
-    <q-btn v-if="selected.length" label="Удалить роль" class="text-bold q-mt-md" rounded @click="showDeleteRoleDialog = true" />
+    <q-btn label="Новый проект" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewProjectDialog = true" />
+    <q-btn v-if="selected.length" label="Удалить проект" class="text-bold q-mt-md" rounded @click="showDeleteProjectDialog = true" />
 
-    <q-dialog v-model="showNewRoleDialog">
+    <q-dialog v-model="showNewProjectDialog">
       <q-card class="q-pa-lg form-wrapper">
-        <div class="text-h6 text-bold q-mb-md">Создание новой роли</div>
+        <div class="text-h6 text-bold q-mb-md">Создание нового проекта</div>
         <q-form
-          @submit="onAddRoleSubmit"
-          class="new-role-form"
+          @submit="onAddProjectSubmit"
+          class="new-project-form"
         >
           <q-input
             bottom-slots
-            v-model="roleName"  
+            v-model="projectName"  
             label="Имя"
             :rules="[ val => val && val.length > 0 ]"
             filled
@@ -47,7 +47,7 @@
 
           <q-input
             bottom-slots
-            v-model="roleDescription"
+            v-model="projectDescription"
             label="Описание"
             filled
             type="textarea"
@@ -63,13 +63,13 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="showDeleteRoleDialog">
+    <q-dialog v-model="showDeleteProjectDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">Удалить роль?</div>
-        После подтверждения этого действия роль <b>{{selected[0].name}}</b> будет удалена.
+        <div class="text-h6 text-bold q-mb-md">Удалить проект?</div>
+        После подтверждения этого действия проект <b>{{selected[0].name}}</b> будет удален.
         <q-form
-          @submit="onDeleteRoleSubmit"
-          class="new-role-form"
+          @submit="onDeleteProjectSubmit"
+          class="new-project-form"
         >
           <div class="flex q-mt-lg">
             <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
@@ -82,59 +82,60 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { RolesApiService } from 'src/modules/roles/services'
-import { TRole } from 'src/modules/roles/services/roles-api.interface'
+import { ProjectsApiService } from 'src/modules/projects/services'
+import { TProject } from 'src/modules/projects/services/projects-api.interface'
 import { useUsersStore } from 'src/modules/users/users-store'
-import { useRolesStore } from 'src/modules/roles/roles-store'
 import { useRouter } from 'vue-router'
 
 const usersStore = useUsersStore()
-const rolesStore = useRolesStore()
 const router = useRouter()
 
 const $q = useQuasar()
 
-const roles = computed(() => rolesStore.roles)
+let projects = ref<TProject[]>([])
 
-const selected = ref<TRole[]>([])
+const selected = ref<TProject[]>([])
 
 let columns = ref([
   {
     name: 'name',
     required: true,
-    label: 'Имя и фамилия',
+    label: 'Название',
     align: 'left',
-    field: (role: TRole) => role.name,
+    field: (project: TProject) => project.name,
     sortable: true
-  },
-  { name: 'permissions', align: 'left', label: 'Разрешения', field: 'permissions', format: (val: string) => val.length, sortable: true }
+  }
 ])
 
-rolesStore.getAllRoles()
+async function getProjectsInfo () {
+  projects.value = await ProjectsApiService.getAllProjects()
+}
 
-const roleName = ref('')
-const roleDescription = ref(null)
+getProjectsInfo()
 
-const showNewRoleDialog = ref(false)
+const projectName = ref('')
+const projectDescription = ref(null)
 
-async function onAddRoleSubmit () {
+const showNewProjectDialog = ref(false)
+
+async function onAddProjectSubmit () {
   try {
-    if (!roleName.value) return
-    const newRole = await RolesApiService.createRole({
-      name: roleName.value,
-      description: roleDescription.value,
-      permissions: [],
+    if (!projectName.value) return
+    const newProject = await ProjectsApiService.createProject({
+      name: projectName.value,
+      description: projectDescription.value,
+      project_owner: usersStore.me?.user_id,
       workspace_id: usersStore.me?.workspace_id
     })
     $q.notify({
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Роль создана'
+      message: 'Проект создан'
     })
-    router.push(`/role/${newRole.role_id}`)
+    router.push(`/project/${newProject.project_id}`)
   } catch (e) {
     $q.notify({
       color: 'red-5',
@@ -145,19 +146,19 @@ async function onAddRoleSubmit () {
   }
 }
 
-const showDeleteRoleDialog = ref(false)
+const showDeleteProjectDialog = ref(false)
 
-async function onDeleteRoleSubmit () {
+async function onDeleteProjectSubmit () {
   try {
-    if (!selected.value[0]?.role_id) return
-    await RolesApiService.deleteRole({ role_id: selected.value[0].role_id })
+    if (!selected.value[0]?.project_id) return
+    await ProjectsApiService.deleteProject({ project_id: selected.value[0].project_id })
     $q.notify({
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Роль удалена'
+      message: 'Проект удален'
     })
-    rolesStore.getAllRoles()
+    getProjectsInfo()
   } catch (e) {
     $q.notify({
       color: 'red-5',
@@ -168,16 +169,16 @@ async function onDeleteRoleSubmit () {
   }
 
   selected.value = []
-  showDeleteRoleDialog.value = false
+  showDeleteProjectDialog.value = false
 }
 
 </script>
 
 <style lang="sass" scoped>
-.roles-wrapper
+.projects-wrapper
   width: 100%
-.roles-table:deep
-  .roles-table-header
+.projects-table:deep
+  .projects-table-header
     background: $primary
     color: #fff
   th
@@ -186,10 +187,10 @@ async function onDeleteRoleSubmit () {
     font-weight: 500
     tr td:nth-child(2)
       padding: 0
-.role-form:deep
+.project-form:deep
   & input
     font-weight: bold
-.roles-link
+.projects-link
   text-decoration: none
   display: flex
   align-items: center

@@ -75,8 +75,6 @@ import { useRolesStore } from 'src/modules/roles/roles-store'
 import { useRoute } from 'vue-router'
 import { TPermission } from 'src/modules/roles/services/roles-api.interface'
 
-type TPermissionFilters = 'entity_type' | 'operation'
-
 const route = useRoute()
 const rolesStore = useRolesStore()
 
@@ -84,6 +82,7 @@ rolesStore.getRole(route.params.id as string)
 
 const $q = useQuasar()
 
+type TPermissionFilters = 'entity_type' | 'operation'
 const localBasePermissions = ref<TPermission[]>(structuredClone(toRaw(rolesStore.basePermissions)))
 const permissionsFilter = ref<TPermissionFilters>('entity_type')
 const filterGroups = computed(() => [...new Set(localBasePermissions.value.map(p => p[permissionsFilter.value]))])

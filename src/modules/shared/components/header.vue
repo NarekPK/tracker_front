@@ -3,7 +3,7 @@
     <a href="/"><img class="logo" src="~assets/logo.svg" alt=""></a>
     <div class="header-menu">
       <q-btn-group outline class="menu">
-        <q-btn href="/projects" outline color="primary" label="Проекты" class="text-bold" disabled />
+        <q-btn href="/projects" outline color="primary" label="Проекты" class="text-bold" />
         <q-btn href="/boards" outline color="primary" label="Доски Agile" class="text-bold" disabled />
         <q-btn href="/tasks" outline color="primary" label="Задачи" class="text-bold" disabled />
         <q-btn href="/articles" outline color="primary" label="База знаний" class="text-bold" disabled />
@@ -70,12 +70,12 @@
         class="user text-bold"
         icon="account_circle"
         color="primary"
-        :label="`${usersStore.user?.profile_name || ''}`"
+        :label="`${usersStore.me?.profile_name || ''}`"
         rounded
       >
         <q-menu auto-close class="text-bold text-primary">
           <q-list style="min-width: 100px">
-            <q-item href="/user" clickable>
+            <q-item :href="`/user/${usersStore.me?.user_id}`" clickable>
               <q-item-section>Профиль</q-item-section>
             </q-item>
             <q-item clickable @click="logout">

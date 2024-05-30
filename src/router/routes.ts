@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/user',
+    path: '/user/:id',
     component: () => import('layouts/AdminLayout.vue'),
     children: [{ path: '', component: () => import('src/modules/users/pages/UserPage.vue') }],
   },
@@ -45,7 +45,19 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/projects',
-    alias: ['/boards', '/tasks', '/articles', '/groups', '/organizations'],
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', component: () => import('src/modules/projects/pages/ProjectsPage.vue') }],
+  },
+
+  {
+    path: '/project/:id',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', component: () => import('src/modules/projects/pages/ProjectPage.vue') }],
+  },
+
+  {
+    path: '/tasks',
+    alias: ['/boards', '/articles', '/groups', '/organizations'],
     component: () => import('pages/InDevelopment.vue'),
   },
 

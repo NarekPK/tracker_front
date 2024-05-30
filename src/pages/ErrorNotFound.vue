@@ -6,7 +6,7 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+        Страницы не существует
       </div>
 
       <q-btn
@@ -14,8 +14,8 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/"
-        label="Go Home"
+        to="/projects"
+        label="Вернуться на главную"
         no-caps
       />
     </div>

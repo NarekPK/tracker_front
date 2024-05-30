@@ -6,8 +6,12 @@ export default class UsersApiService {
     return await MainApiService.fetchApi('/users/create-user', 'POST', userInfo)
   }
 
-  static async getUser (): Promise<TUser> {
-    return await MainApiService.fetchApi('/users/get-user')
+  static async getMe (): Promise<TUser> {
+    return await MainApiService.fetchApi('/users/get-me')
+  }
+
+  static async getUser (user_id: string): Promise<TUser> {
+    return await MainApiService.fetchApi(`/users/get-user/${user_id}`)
   }
 
   static async getAllUsers (): Promise<TUser[]> {

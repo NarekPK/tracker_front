@@ -26,7 +26,7 @@ defineOptions({
 async function handleLogin () {
   try {
     await AuthApiService.refresh()
-    router.push('/user')
+    router.push('/projects')
   } catch (e) {
     router.push('/login')
   }

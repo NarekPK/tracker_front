@@ -21,7 +21,7 @@ defineOptions({
 const usersStore = useUsersStore()
 const rolesStore = useRolesStore()
 
-usersStore.getUser()
+usersStore.getMe()
 
 if (!localStorage.getItem('basePermissions')) rolesStore.getBasePermissions()
 

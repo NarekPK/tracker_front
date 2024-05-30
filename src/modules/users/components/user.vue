@@ -42,9 +42,13 @@ import { ref, computed, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { UsersApiService } from 'src/modules/users/services'
 import { date } from 'quasar'
+import { useRoute } from 'vue-router'
 import { useUsersStore } from 'src/modules/users/users-store'
 
+const route = useRoute()
+
 const usersStore = useUsersStore()
+usersStore.getUser(route.params.id as string)
 
 const $q = useQuasar()
 
@@ -73,7 +77,8 @@ async function onSubmit (event: Event) {
   try {
     usersStore.user = await UsersApiService.updateUser({
       user_name: userName.value,
-      profile_name: profileName.value
+      profile_name: profileName.value,
+      user_id: user.value?.user_id
     })
     $q.notify({
       color: 'primary',

@@ -81,17 +81,17 @@ export default configure((ctx) => {
       // "chain" is a webpack-chain object https://github.com/sorrycc/webpack-chain
       // chainWebpack (/* chain, { isClient, isServer } */) {}
 
-      env: {
-        API: ctx.dev
-          ? 'http://79.174.82.97:7000/api'
-          : 'http://79.174.82.97:7000/api'
-      }
-
       // env: {
       //   API: ctx.dev
-      //     ? 'http://localhost:7000/api'
+      //     ? 'http://79.174.82.97:7000/api'
       //     : 'http://79.174.82.97:7000/api'
       // }
+
+      env: {
+        API: ctx.dev
+          ? 'http://localhost:7000/api'
+          : 'http://79.174.82.97:7000/api'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer

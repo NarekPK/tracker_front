@@ -25,7 +25,7 @@
         ]"
       />
 
-      <q-toggle v-model="accept" label="Я принимаю условия лицензионные условия и соглашения" />
+      <q-toggle v-model="accept" label="Я принимаю лицензионные условия и соглашения" />
 
       <div class="flex justify-center">
         <q-btn label="Зарегистрироваться" type="submit" color="primary" class="text-bold" />
@@ -62,7 +62,7 @@ async function onSubmit () {
     try {
       if (!email.value || !password.value) return
       await AuthApiService.register({ email: email.value, password: password.value })
-      router.push('/user')
+      router.push('/projects')
     } catch (e) {
       $q.notify({
         color: 'red-5',

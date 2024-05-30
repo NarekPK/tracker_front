@@ -12,7 +12,20 @@
       color="primary"
       class="users-table"
       table-header-class="users-table-header"
-    />
+      :rows-per-page-options="[10]"
+    >
+      <template v-slot:body-cell-profile_name="props">
+        <q-td :props="props">
+          <router-link
+            :to="`/user/${props.row.user_id}`"
+            color="primary"
+            class="users-link text-subtitle1"
+          >
+            {{ props.row.profile_name }}
+          </router-link>
+        </q-td>
+      </template>
+    </q-table>
 
     <q-btn label="Новый пользователь" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewUserDialog = true" />
     <q-btn v-if="selected.length" label="Удалить пользователя" class="text-bold q-mt-md" rounded @click="showDeleteUserDialog = true" />
@@ -63,7 +76,7 @@
     <q-dialog v-model="showDeleteUserDialog">
       <q-card class="q-pa-lg">
         <div class="text-h6 text-bold q-mb-md">Удалить пользователя?</div>
-        <div v-html="`После подтверждения этого действия аккаунт <b>${selected[0].profile_name}</b> будет удален.`"></div>
+        После подтверждения этого действия аккаунт <b>{{selected[0].profile_name}}</b> будет удален.
         <q-form
           @submit="onDeleteUserSubmit"
           class="new-user-form"
@@ -79,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { UsersApiService } from 'src/modules/users/services'
 import { TUser } from 'src/modules/users/services/users-api.interface'
@@ -89,8 +102,6 @@ import { useUsersStore } from 'src/modules/users/users-store'
 const usersStore = useUsersStore()
 
 const $q = useQuasar()
-
-let users = ref<TUser[]>([])
 
 const selected = ref<TUser[]>([])
 
@@ -103,16 +114,14 @@ let columns = ref([
     field: (user: TUser) => user.user_name,
     sortable: true
   },
-  { name: 'profile_name', align: 'left', label: 'Имя профиля', field: 'profile_name', sortable: true },
+  { name: 'profile_name', align: 'left', label: 'Имя профиля', field: (user: TUser) => user.profile_name, sortable: true },
   { name: 'email', align: 'left', label: 'Электронная почта', field: 'email', sortable: true },
   { name: 'createdAt', align: 'left', label: 'Дата регистрации', field: 'createdAt', format: (val: string) => date.formatDate(val, 'D MMM YYYYг. HH:mm:ss'), }
 ])
 
-async function getUsersInfo () {
-  users.value = await UsersApiService.getAllUsers()
-}
-
-getUsersInfo()
+usersStore.getAllUsers()
+const users = computed(() => usersStore.users)
+const me = computed(() => usersStore.me)
 
 const email = ref(null)
 const password = ref(null)
@@ -136,7 +145,7 @@ async function onAddUserSubmit () {
         email: email.value,
         password: password.value,
         confirmation_password: confirmationPassword.value,
-        workspace_id: usersStore.user?.workspace_id
+        workspace_id: me.value?.workspace_id
       })
       $q.notify({
         color: 'primary',
@@ -144,9 +153,7 @@ async function onAddUserSubmit () {
         icon: 'check_circle',
         message: 'Пользователь создан'
       })
-      showNewUserDialog.value = false
-      clearAddUserInfo()
-      getUsersInfo()
+      usersStore.getAllUsers()
     } catch (e) {
       $q.notify({
         color: 'red-5',
@@ -156,6 +163,9 @@ async function onAddUserSubmit () {
       })
     }
   }
+
+  showNewUserDialog.value = false
+  clearAddUserInfo()
 }
 
 function clearAddUserInfo () {
@@ -176,9 +186,7 @@ async function onDeleteUserSubmit () {
       icon: 'check_circle',
       message: 'Пользователь удален'
     })
-    selected.value = []
-    showDeleteUserDialog.value = false
-    getUsersInfo()
+    usersStore.getAllUsers()
   } catch (e) {
     $q.notify({
       color: 'red-5',
@@ -187,6 +195,9 @@ async function onDeleteUserSubmit () {
       message: e.message
     })
   }
+
+  selected.value = []
+  showDeleteUserDialog.value = false
 }
 
 </script>
@@ -205,4 +216,9 @@ async function onDeleteUserSubmit () {
 .user-form:deep
   & input
     font-weight: bold
+.users-link
+  text-decoration: none
+  display: flex
+  align-items: center
+  height: 100%
 </style>

@@ -14,7 +14,7 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/"
+        to="/projects"
         label="На Главную"
         no-caps
       />

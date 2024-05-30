@@ -45,7 +45,7 @@ async function onSubmit (event: Event) {
   try {
     if (!email.value || !password.value) return
     await AuthApiService.login({ email: email.value, password: password.value })
-    router.push('/user')
+    router.push('/projects')
   } catch (e) {
     $q.notify({
       color: 'red-5',
