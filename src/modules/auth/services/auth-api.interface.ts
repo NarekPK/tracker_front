@@ -1,4 +1,4 @@
-export type TAuthInfo = {
+export interface IAuthInfo {
   email?: string
   password?: string
 }

@@ -1,20 +1,20 @@
 <template>
-  <q-page class="user-page row items-start justify-start">
-    <user />
+  <q-page class="tasks-page row items-start justify-start">
+    <tasks />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import User from 'src/modules/users/components/user.vue'
+import Tasks from 'src/modules/tasks/components/tasks.vue'
 
 defineOptions({
-  name: 'UserPage'
+  name: 'TasksPage'
 });
 
 </script>
 
 <style lang="sass" scoped>
-.user-page
+.tasks-page
   max-width: 1024px
   margin: 0 auto
 </style>

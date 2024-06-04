@@ -1,6 +1,6 @@
 <template>
   <q-page class="project-page row items-start justify-start">
-    <project title="Project" />
+    <project />
   </q-page>
 </template>
 

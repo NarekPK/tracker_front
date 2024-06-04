@@ -1,6 +1,6 @@
 <template>
   <div class="roles-wrapper">
-    <div class="roles-title q-pa-sm q-mb-sm text-h5 text-weight-bold">{{ `Ролей: ${roles.length}` }}</div>
+    <div class="roles-title q-mb-lg text-h5 text-weight-bold">{{ `Ролей: ${roles.length}` }}</div>
     <q-table
       flat
       :rows="roles"
@@ -39,7 +39,7 @@
         >
           <q-input
             bottom-slots
-            v-model="roleName"  
+            v-model="roleName"
             label="Имя"
             :rules="[ val => val && val.length > 0 ]"
             filled
@@ -85,7 +85,7 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { RolesApiService } from 'src/modules/roles/services'
-import { TRole } from 'src/modules/roles/services/roles-api.interface'
+import { IRole } from 'src/modules/roles/services/roles-api.interface'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useRolesStore } from 'src/modules/roles/roles-store'
 import { useRouter } from 'vue-router'
@@ -98,7 +98,7 @@ const $q = useQuasar()
 
 const roles = computed(() => rolesStore.roles)
 
-const selected = ref<TRole[]>([])
+const selected = ref<IRole[]>([])
 
 let columns = ref([
   {
@@ -106,7 +106,7 @@ let columns = ref([
     required: true,
     label: 'Имя и фамилия',
     align: 'left',
-    field: (role: TRole) => role.name,
+    field: (role: IRole) => role.name,
     sortable: true
   },
   { name: 'permissions', align: 'left', label: 'Разрешения', field: 'permissions', format: (val: string) => val.length, sortable: true }
@@ -186,8 +186,9 @@ async function onDeleteRoleSubmit () {
     font-weight: 500
     tr td:nth-child(2)
       padding: 0
-.role-form:deep
-  & input
+.new-role-form:deep
+  & input,
+  & textarea
     font-weight: bold
 .roles-link
   text-decoration: none

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { TUser } from './services/users-api.interface'
+import { IUser } from './services/users-api.interface'
 import { UsersApiService } from './services/'
 import { ref } from 'vue'
 
 export const useUsersStore = defineStore('users',() => {
-  const me = ref<TUser | null>(null)
-  const user = ref<TUser | null>(null)
-  const users = ref<TUser[]>([])
+  const me = ref<IUser | null>(null)
+  const user = ref<IUser | null>(null)
+  const users = ref<IUser[]>([])
 
   async function getMe () {
     try {

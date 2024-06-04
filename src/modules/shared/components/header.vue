@@ -5,7 +5,7 @@
       <q-btn-group outline class="menu">
         <q-btn href="/projects" outline color="primary" label="Проекты" class="text-bold" />
         <q-btn href="/boards" outline color="primary" label="Доски Agile" class="text-bold" disabled />
-        <q-btn href="/tasks" outline color="primary" label="Задачи" class="text-bold" disabled />
+        <q-btn href="/tasks" outline color="primary" label="Задачи" class="text-bold" />
         <q-btn href="/articles" outline color="primary" label="База знаний" class="text-bold" disabled />
         <q-btn
           label="Доступы"
@@ -39,13 +39,13 @@
       >
         <q-menu auto-close class="text-bold text-primary">
           <q-list style="min-width: 100px">
-            <q-item href="/projects" clickable disabled>
+            <q-item href="/projects" clickable>
               <q-item-section>Проекты</q-item-section>
             </q-item>
             <q-item href="/boards" clickable disabled>
               <q-item-section>Доски Agile</q-item-section>
             </q-item>
-            <q-item href="/tasks" clickable disabled>
+            <q-item href="/tasks" clickable>
               <q-item-section>Задачи</q-item-section>
             </q-item>
             <q-item href="/articles" clickable disabled>
@@ -110,6 +110,9 @@ async function logout () {
   max-width: 1024px
   margin-left: auto
   margin-right: auto
+  background: #fff
+  border-radius: 8px
+  box-shadow: $base-shadow
 .logo
   margin-right: 15px
 .header-menu

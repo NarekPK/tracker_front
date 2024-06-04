@@ -1,6 +1,6 @@
 <template>
   <q-page class="users-page row items-start justify-start">
-    <users title="Users" />
+    <users />
   </q-page>
 </template>
 

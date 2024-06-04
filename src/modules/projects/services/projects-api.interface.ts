@@ -1,4 +1,4 @@
-export type TProject = {
+export interface IProject {
   project_id?: string
   name?: string
   description?: string | null
@@ -6,13 +6,13 @@ export type TProject = {
   workspace_id?: string
 }
 
-export type TProjectRole = {
+export interface IProjectRole {
   project_id?: string
   role_id?: string
   user_id?: string
 }
 
-export type TProjectUserRole = {
+export interface IProjectUserRole {
   id: string
   project_id: string
   roles: {

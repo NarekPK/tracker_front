@@ -1,15 +1,17 @@
 <template>
-  <q-page class="column items-center justify-center q-pa-md">
-    <div class="main-header flex justify-between items-center">
-      <img class="logo q-mb-md" src="~assets/logo.svg" alt="">
-      <div class="auth-buttons q-mb-md">
-        <q-btn @click="handleLogin" label="Войти" class="q-mr-md text-bold"/>
-        <q-btn href="/register" label="Зарегистрироваться" type="submit" color="primary" class="text-bold"/>
+  <q-page class="column items-center justify-center">
+    <div class="main-page flex column q-pa-xl">
+      <div class="main-header">
+        <img class="logo q-mb-md" src="~assets/logo.svg" alt="">
+        <div class="auth-buttons q-mb-md">
+          <q-btn @click="handleLogin" label="Войти" class="text-bold"/>
+          <q-btn href="/register" label="Зарегистрироваться" type="submit" color="primary" class="text-bold"/>
+        </div>
+        <!-- <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm" /> -->
       </div>
-      <!-- <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm" /> -->
-    </div>
 
-    <img class="main-page-img" src="~assets/main-page-pic.svg" alt="">
+      <img class="main-page-img" src="~assets/main-page-pic.svg" alt="">
+    </div>
   </q-page>
 </template>
 
@@ -35,12 +37,25 @@ async function handleLogin () {
 </script>
 
 <style lang="sass" scoped>
+.main-page
+  max-width: 600px
+  width: 100%
+  background: #fff
+  border-radius: 8px
+  box-shadow: $base-shadow
 .main-header
+  display: flex
   width: 100%
   max-width: 500px
-  @media (max-width: 400px)
-    flex-direction: column
-
+  justify-content: center
+  flex-direction: column
+  align-items: center
+  @media (min-width: 500px)
+    flex-direction: row
+    justify-content: space-between
+.auth-buttons
+  display: flex
+  gap: 16px
 .main-page-img
   max-width: 600px
   max-height: 50vh

@@ -7,3 +7,7 @@ defineOptions({
   name: 'App'
 });
 </script>
+<style lang="sass">
+body
+  background: #eff2f3
+</style>

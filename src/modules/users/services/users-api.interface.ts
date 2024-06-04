@@ -1,4 +1,4 @@
-export type TUser = {
+export interface IUser {
   email?: string
   user_name?: string
   user_id?: string

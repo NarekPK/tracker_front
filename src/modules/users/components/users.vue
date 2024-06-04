@@ -1,6 +1,6 @@
 <template>
   <div class="users-wrapper">
-    <div class="users-title q-pa-sm q-mb-sm text-h5 text-weight-bold">{{ `Пользователей: ${users.length}` }}</div>
+    <div class="users-title q-mb-lg text-h5 text-weight-bold">{{ `Пользователей: ${users.length}` }}</div>
     <q-table
       flat
       :rows="users"
@@ -79,7 +79,7 @@
         После подтверждения этого действия аккаунт <b>{{selected[0].profile_name}}</b> будет удален.
         <q-form
           @submit="onDeleteUserSubmit"
-          class="new-user-form"
+          class="delete-user-form"
         >
           <div class="flex q-mt-lg">
             <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
@@ -95,7 +95,7 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { UsersApiService } from 'src/modules/users/services'
-import { TUser } from 'src/modules/users/services/users-api.interface'
+import { IUser } from 'src/modules/users/services/users-api.interface'
 import { date } from 'quasar'
 import { useUsersStore } from 'src/modules/users/users-store'
 
@@ -103,7 +103,7 @@ const usersStore = useUsersStore()
 
 const $q = useQuasar()
 
-const selected = ref<TUser[]>([])
+const selected = ref<IUser[]>([])
 
 let columns = ref([
   {
@@ -111,10 +111,10 @@ let columns = ref([
     required: true,
     label: 'Имя и фамилия',
     align: 'left',
-    field: (user: TUser) => user.user_name,
+    field: (user: IUser) => user.user_name,
     sortable: true
   },
-  { name: 'profile_name', align: 'left', label: 'Имя профиля', field: (user: TUser) => user.profile_name, sortable: true },
+  { name: 'profile_name', align: 'left', label: 'Имя профиля', field: (user: IUser) => user.profile_name, sortable: true },
   { name: 'email', align: 'left', label: 'Электронная почта', field: 'email', sortable: true },
   { name: 'createdAt', align: 'left', label: 'Дата регистрации', field: 'createdAt', format: (val: string) => date.formatDate(val, 'D MMM YYYYг. HH:mm:ss'), }
 ])
@@ -213,8 +213,9 @@ async function onDeleteUserSubmit () {
     font-weight: 700
   tbody
     font-weight: 500
-.user-form:deep
-  & input
+.new-user-form:deep
+  & input,
+  & textarea
     font-weight: bold
 .users-link
   text-decoration: none

@@ -1,6 +1,6 @@
 <template>
   <div class="project-wrapper">
-    <div class="project-title q-pa-sm q-mb-sm text-h5 text-weight-bold">Проект</div>
+    <div class="project-title q-mb-lg text-h5 text-weight-bold">Проект</div>
     <div class="form-wrapper">
       <q-form
         @submit="onSubmit"
@@ -8,7 +8,7 @@
       >
         <q-input
           bottom-slots
-          v-model="projectName"  
+          v-model="projectName"
           label="Имя"
           :rules="[ val => val && val.length > 0 ]"
           filled
@@ -25,7 +25,7 @@
         <q-btn v-if="isChanged" label="Сохранить" type="submit" color="primary text-bold q-mt-lg" />
       </q-form>
     </div>
-    <div class="project-title q-pa-sm q-mb-md text-h5 text-weight-bold">Доступы проекта</div>
+    <div class="project-title q-mb-lg text-h5 text-weight-bold">Доступы проекта</div>
     <div class="project-controls q-mb-md">
       <div class="project-controls__buttons">
         <q-btn label="Предоставить роль" color="primary" class="text-bold q-mr-md" rounded @click="showNewProjectRoleDialog = true" />
@@ -71,7 +71,7 @@
           </q-item-label>
         </q-item-section>
         <q-item-section class="justify-start">
-          <q-item-label @click.prevent>
+          <q-item-label>
             <div class="text-weight-bold q-pa-sm">Роль</div>
             <div
               v-for="r in item.roles"
@@ -99,7 +99,7 @@
         <div class="text-h6 text-bold q-mb-md">Выдать роль</div>
         <q-form
           @submit="onAddProjectRoleSubmit"
-          class="new-project-form"
+          class="new-role-form"
         >
           <q-select filled v-model="roleToProvide" :options="rolesOptions" class="q-mb-lg" label="Выберите роль" />
 
@@ -151,7 +151,7 @@ import { useProjectsStore } from 'src/modules/projects/projects-store'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useRoute } from 'vue-router'
 import { useRolesStore } from 'src/modules/roles/roles-store'
-import { TProjectUserRole } from 'src/modules/projects/services/projects-api.interface'
+import { IProjectUserRole } from 'src/modules/projects/services/projects-api.interface'
 
 
 const route = useRoute()
@@ -225,37 +225,53 @@ const userToProvide = ref<TUserOption | null>(null)
 const showNewProjectRoleDialog = ref(false)
 
 async function onAddProjectRoleSubmit () {
-  try {
-    await ProjectsApiService.addProjectRole({
-      project_id: project.value?.project_id,
-      role_id: roleToProvide.value?.value,
-      user_id: userToProvide.value?.value
-    })
-    $q.notify({
-      color: 'primary',
-      textColor: 'white',
-      icon: 'check_circle',
-      message: 'Роль предоставлена'
-    })
-    projectsStore.getProjectRoles(route.params.id as string)
-  } catch (e) {
+  if (!userToProvide.value) {
     $q.notify({
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: e.message
+      message: 'Выберите пользователя для роли'
     })
-  }
+  } else if (!roleToProvide.value) {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: 'Выберите роль для пользователя'
+    })
+  } else {
+  try {
+      await ProjectsApiService.addProjectRole({
+        project_id: project.value?.project_id,
+        role_id: roleToProvide.value?.value,
+        user_id: userToProvide.value?.value
+      })
+      $q.notify({
+        color: 'primary',
+        textColor: 'white',
+        icon: 'check_circle',
+        message: 'Роль предоставлена'
+      })
+      projectsStore.getProjectRoles(route.params.id as string)
+    } catch (e) {
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: e.message
+      })
+    }
 
-  showNewProjectRoleDialog.value = false
-  roleToProvide.value = null
-  userToProvide.value = null
+    showNewProjectRoleDialog.value = false
+    roleToProvide.value = null
+    userToProvide.value = null
+  }
 }
 
 // type TRolesFilters = 'user' | 'role'
 
 const projectRoles = computed(() => projectsStore.projectRoles)
-const localRoles = ref<TProjectUserRole[]>([])
+const localRoles = ref<IProjectUserRole[]>([])
 const selectedUsersRoles = computed(() => localRoles.value.filter(i => i.roles.some(r => r.isActive)))
 
 // const rolesFilter = ref<TRolesFilters>('user')
@@ -265,8 +281,8 @@ const showDeleteProjectRoleDialog = ref(false)
 
 projectsStore.getProjectRoles(route.params.id as string)
 
-function refreshLocalRoles (val: TProjectUserRole[]) {
-  localRoles.value = val.filter(i => i.roles.length).map((item: TProjectUserRole) => {
+function refreshLocalRoles (val: IProjectUserRole[]) {
+  localRoles.value = val.filter(i => i.roles.length).map((item: IProjectUserRole) => {
     item.roles = item.roles.map(r => {
       return { ...r, isActive: false }
     })
@@ -281,7 +297,7 @@ watch(() => projectRoles.value, async (val) => {
   refreshLocalRoles(val)
 })
 
-function updateUserRolesChecks (item: TProjectUserRole, type: 'user' | 'role') {
+function updateUserRolesChecks (item: IProjectUserRole, type: 'user' | 'role') {
   if (type === 'user') {
     item.roles = item.roles.map(r => {
       return { ...r, isActive: item.isActive }
@@ -346,8 +362,9 @@ async function onDeleteProjectRoleSubmit () {
   width: 100%
   max-width: 350px
 .project-form:deep
-  & input
-    font-weight: 500
+  & input,
+  & textarea
+    font-weight: bold
 .permissions-table:deep
   .permissions-table-header
     background: $primary

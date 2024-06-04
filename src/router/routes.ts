@@ -57,7 +57,25 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/tasks',
-    alias: ['/boards', '/articles', '/groups', '/organizations'],
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', component: () => import('src/modules/tasks/pages/TasksPage.vue') }],
+  },
+
+  {
+    path: '/create-task',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', component: () => import('src/modules/tasks/pages/CreateTaskPage.vue') }],
+  },
+
+  {
+    path: '/task/:id',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', component: () => import('src/modules/tasks/pages/TaskPage.vue') }],
+  },
+
+  {
+    path: '/boards',
+    alias: ['/articles', '/groups', '/organizations'],
     component: () => import('pages/InDevelopment.vue'),
   },
 

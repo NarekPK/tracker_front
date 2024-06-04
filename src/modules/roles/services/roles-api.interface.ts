@@ -1,4 +1,4 @@
-export type TRole = {
+export interface IRole {
   role_id?: string
   name?: string
   description?: string | null
@@ -6,13 +6,13 @@ export type TRole = {
   workspace_id?: string
 }
 
-export type TRelatedPermission = {
+export interface IRelatedPermission {
   permission_key: string
   permission_id: string
   name: string
 }
 
-export type TPermission = {
+export interface IPermission {
   permission_key: string
   permission_id: string
   name: string
@@ -20,7 +20,7 @@ export type TPermission = {
   global: boolean
   entity_type: string
   operation: string
-  dependent_permissions: TRelatedPermission[]
-  implied_permissions: TRelatedPermission[]
+  dependent_permissions: IRelatedPermission[]
+  implied_permissions: IRelatedPermission[]
   isActive?: boolean
 }

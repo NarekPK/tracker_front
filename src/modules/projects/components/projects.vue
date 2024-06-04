@@ -1,6 +1,6 @@
 <template>
   <div class="projects-wrapper">
-    <div class="projects-title q-pa-sm q-mb-sm text-h5 text-weight-bold">{{ `Проектов: ${projects.length}` }}</div>
+    <div class="projects-title q-mb-lg text-h5 text-weight-bold">{{ `Проектов: ${projects.length}` }}</div>
     <q-table
       flat
       :rows="projects"
@@ -39,7 +39,7 @@
         >
           <q-input
             bottom-slots
-            v-model="projectName"  
+            v-model="projectName"
             label="Имя"
             :rules="[ val => val && val.length > 0 ]"
             filled
@@ -69,7 +69,7 @@
         После подтверждения этого действия проект <b>{{selected[0].name}}</b> будет удален.
         <q-form
           @submit="onDeleteProjectSubmit"
-          class="new-project-form"
+          class="delete-project-form"
         >
           <div class="flex q-mt-lg">
             <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
@@ -85,7 +85,7 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { ProjectsApiService } from 'src/modules/projects/services'
-import { TProject } from 'src/modules/projects/services/projects-api.interface'
+import { IProject } from 'src/modules/projects/services/projects-api.interface'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useRouter } from 'vue-router'
 
@@ -94,9 +94,9 @@ const router = useRouter()
 
 const $q = useQuasar()
 
-let projects = ref<TProject[]>([])
+let projects = ref<IProject[]>([])
 
-const selected = ref<TProject[]>([])
+const selected = ref<IProject[]>([])
 
 let columns = ref([
   {
@@ -104,7 +104,7 @@ let columns = ref([
     required: true,
     label: 'Название',
     align: 'left',
-    field: (project: TProject) => project.name,
+    field: (project: IProject) => project.name,
     sortable: true
   }
 ])
@@ -187,8 +187,9 @@ async function onDeleteProjectSubmit () {
     font-weight: 500
     tr td:nth-child(2)
       padding: 0
-.project-form:deep
-  & input
+.new-project-form:deep
+  & input,
+  & textarea
     font-weight: bold
 .projects-link
   text-decoration: none

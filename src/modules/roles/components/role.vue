@@ -1,13 +1,13 @@
 <template>
   <div class="role-wrapper">
-    <div class="role-title q-pa-sm q-mb-sm text-h5 text-weight-bold">Роль</div>
+    <div class="role-title q-mb-lg text-h5 text-weight-bold">Роль</div>
     <q-form
       @submit="onSubmit"
       class="role-form"
     >
       <q-input
         bottom-slots
-        v-model="roleName"  
+        v-model="roleName"
         label="Имя"
         :rules="[ val => val && val.length > 0 ]"
         filled
@@ -73,7 +73,7 @@ import { useQuasar } from 'quasar'
 import { RolesApiService } from 'src/modules/roles/services'
 import { useRolesStore } from 'src/modules/roles/roles-store'
 import { useRoute } from 'vue-router'
-import { TPermission } from 'src/modules/roles/services/roles-api.interface'
+import { IPermission } from 'src/modules/roles/services/roles-api.interface'
 
 const route = useRoute()
 const rolesStore = useRolesStore()
@@ -83,7 +83,7 @@ rolesStore.getRole(route.params.id as string)
 const $q = useQuasar()
 
 type TPermissionFilters = 'entity_type' | 'operation'
-const localBasePermissions = ref<TPermission[]>(structuredClone(toRaw(rolesStore.basePermissions)))
+const localBasePermissions = ref<IPermission[]>(structuredClone(toRaw(rolesStore.basePermissions)))
 const permissionsFilter = ref<TPermissionFilters>('entity_type')
 const filterGroups = computed(() => [...new Set(localBasePermissions.value.map(p => p[permissionsFilter.value]))])
 
@@ -129,7 +129,7 @@ async function onSubmit (event: Event) {
   }
 }
 
-async function updatePermissions (permission: TPermission) {
+async function updatePermissions (permission: IPermission) {
   const newPermissions = permission.isActive ?
     [ ...new Set([...(role.value?.permissions || []), permission.permission_key, ...(permission?.implied_permissions?.map(p => p.permission_key) || []) ])] :
     role.value?.permissions?.filter(p => p !== permission.permission_key && (permission?.dependent_permissions ? permission?.dependent_permissions?.every(d => d.permission_key !== p) : true))
@@ -152,8 +152,9 @@ function getTextColor (type: TPermissionFilters) {
 
 <style lang="sass" scoped>
 .role-form:deep
-  & input
-    font-weight: 500
+  & input,
+  & textarea
+    font-weight: bold
 .permissions-table:deep
   .permissions-table-header
     background: $primary

@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <register-form title="Register" />
+    <register-form />
   </q-page>
 </template>
 

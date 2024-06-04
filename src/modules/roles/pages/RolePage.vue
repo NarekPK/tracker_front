@@ -1,6 +1,6 @@
 <template>
   <q-page class="role-page row items-start justify-start">
-    <role title="Role" />
+    <role />
   </q-page>
 </template>
 

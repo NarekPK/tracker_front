@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
-import { TRole, TPermission } from './services/roles-api.interface'
+import { IRole, IPermission } from './services/roles-api.interface'
 import { RolesApiService } from './services/'
 import { ref } from 'vue'
 
 const localBasePermissions = localStorage.getItem('basePermissions')
 
 export const useRolesStore = defineStore('roles',() => {
-  const role = ref<TRole | null>(null)
-  const roles = ref<TRole[]>([])
-  const basePermissions = ref<TPermission[]>(localBasePermissions ? JSON.parse(localBasePermissions) : [])
+  const role = ref<IRole | null>(null)
+  const roles = ref<IRole[]>([])
+  const basePermissions = ref<IPermission[]>(localBasePermissions ? JSON.parse(localBasePermissions) : [])
 
   async function getRole (role_id: string) {
     try {

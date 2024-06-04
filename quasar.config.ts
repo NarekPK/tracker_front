@@ -28,8 +28,8 @@ export default configure((ctx) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-      
-      
+
+
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -86,6 +86,8 @@ export default configure((ctx) => {
       //     ? 'http://79.174.82.97:7000/api'
       //     : 'http://79.174.82.97:7000/api'
       // }
+
+      devtool: 'source-map',
 
       env: {
         API: ctx.dev

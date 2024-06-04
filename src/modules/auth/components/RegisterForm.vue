@@ -86,6 +86,7 @@ function onReset () {
 .reg-wrapper
   max-width: 400px
   width: 100%
-  border: 1px solid #1976D2
-  border-radius: 16px
+  background: #fff
+  border-radius: 8px
+  box-shadow: $base-shadow
 </style>

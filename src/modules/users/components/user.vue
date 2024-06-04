@@ -104,6 +104,7 @@ async function onSubmit (event: Event) {
 .user-form:deep
   width: 300px
   max-width: 100%
-  & input
-    font-weight: 500
+  & input,
+  & textarea
+    font-weight: bold
 </style>
