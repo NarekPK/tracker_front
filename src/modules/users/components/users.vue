@@ -1,6 +1,6 @@
 <template>
   <div class="users-wrapper">
-    <div class="users-title q-mb-lg text-h5 text-weight-bold">{{ `Пользователей: ${users.length}` }}</div>
+    <div class="users-title q-mb-lg text-h5 text-weight-bold">{{ `${t('USERS')}: ${users.length}` }}</div>
     <q-table
       flat
       :rows="users"
@@ -27,12 +27,24 @@
       </template>
     </q-table>
 
-    <q-btn label="Новый пользователь" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewUserDialog = true" />
-    <q-btn v-if="selected.length" label="Удалить пользователя" class="text-bold q-mt-md" rounded @click="showDeleteUserDialog = true" />
+    <q-btn
+      :label="t('NEW_USER')"
+      color="primary"
+      class="text-bold q-mt-md q-mr-md"
+      rounded
+      @click="showNewUserDialog = true"
+    />
+    <q-btn
+      v-if="selected.length"
+      :label="t('DELETE_USER')"
+      class="text-bold q-mt-md"
+      rounded
+      @click="showDeleteUserDialog = true"
+    />
 
     <q-dialog v-model="showNewUserDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">Создание нового пользователя</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_USER') }}</div>
         <q-form
           @submit="onAddUserSubmit"
           class="new-user-form"
@@ -41,33 +53,29 @@
             v-model="email"
             label="Email"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Введите email']"
+            :rules="[ val => val && val.length > 0 || t('ENTER_EMAIL') ]"
             bottom-slots
           />
 
           <q-input
             type="password"
             v-model="password"
-            label="Пароль"
+            :label="t('PASSWORD')"
             lazy-rules
-            :rules="[
-              val => val && val.length >= 6 || 'Пароль должен быть длиннее 6 символов'
-            ]"
+            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
           />
 
           <q-input
             type="password"
             v-model="confirmationPassword"
-            label="Подтвердить пароль"
+            :label="t('CONFIRM_PASSWORD')"
             lazy-rules
-            :rules="[
-              val => val && val.length >= 6 || 'Пароль должен быть длиннее 6 символов'
-            ]"
+            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
           />
 
           <div class="flex q-mt-lg">
-            <q-btn label="Создать" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('CREATE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -75,15 +83,22 @@
 
     <q-dialog v-model="showDeleteUserDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">Удалить пользователя?</div>
-        После подтверждения этого действия аккаунт <b>{{selected[0].profile_name}}</b> будет удален.
+        <div class="text-h6 text-bold q-mb-md">{{ t('DELETE_USER') }}?</div>
+        <i18n-t
+          :keypath="'DELETE_USER_WARNING.text'"
+          tag="div"
+        >
+          <template v-slot:selected>
+            <b>{{ selected[0].profile_name }}</b>
+          </template>
+        </i18n-t>
         <q-form
           @submit="onDeleteUserSubmit"
           class="delete-user-form"
         >
           <div class="flex q-mt-lg">
-            <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('DELETE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -98,6 +113,10 @@ import { UsersApiService } from 'src/modules/users/services'
 import { IUser } from 'src/modules/users/services/users-api.interface'
 import { date } from 'quasar'
 import { useUsersStore } from 'src/modules/users/users-store'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 const usersStore = useUsersStore()
 
@@ -109,14 +128,14 @@ let columns = ref([
   {
     name: 'user_name',
     required: true,
-    label: 'Имя и фамилия',
+    label: t('FULL_NAME'),
     align: 'left',
     field: (user: IUser) => user.user_name,
     sortable: true
   },
-  { name: 'profile_name', align: 'left', label: 'Имя профиля', field: (user: IUser) => user.profile_name, sortable: true },
-  { name: 'email', align: 'left', label: 'Электронная почта', field: 'email', sortable: true },
-  { name: 'createdAt', align: 'left', label: 'Дата регистрации', field: 'createdAt', format: (val: string) => date.formatDate(val, 'D MMM YYYYг. HH:mm:ss'), }
+  { name: 'profile_name', align: 'left', label: t('PROFILE_NAME'), field: (user: IUser) => user.profile_name, sortable: true },
+  { name: 'email', align: 'left', label: 'Email', field: 'email', sortable: true },
+  { name: 'createdAt', align: 'left', label: t('REGISTRATION_DATE'), field: 'createdAt', format: (val: string) => date.formatDate(val, 'D MMM YYYY HH:mm:ss'), }
 ])
 
 usersStore.getAllUsers()
@@ -135,7 +154,7 @@ async function onAddUserSubmit () {
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: 'Пароли должны совпадать'
+      message: t('PASSWORDS_MATCH')
     })
   }
   else {
@@ -151,7 +170,7 @@ async function onAddUserSubmit () {
         color: 'primary',
         textColor: 'white',
         icon: 'check_circle',
-        message: 'Пользователь создан'
+        message: t('USER_DELETED')
       })
       usersStore.getAllUsers()
     } catch (e) {
@@ -184,7 +203,7 @@ async function onDeleteUserSubmit () {
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Пользователь удален'
+      message: t('USER_DELETED')
     })
     usersStore.getAllUsers()
   } catch (e) {
@@ -213,10 +232,13 @@ async function onDeleteUserSubmit () {
     font-weight: 700
   tbody
     font-weight: 500
-.new-user-form:deep
-  & input,
-  & textarea
-    font-weight: bold
+.new-user-form
+  width: 300px
+  max-width: 100%
+  &:deep
+    & input,
+    & textarea
+      font-weight: bold
 .users-link
   text-decoration: none
   display: flex

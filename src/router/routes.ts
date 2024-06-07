@@ -56,21 +56,21 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/tasks',
+    path: '/issues',
     component: () => import('layouts/AdminLayout.vue'),
-    children: [{ path: '', component: () => import('src/modules/tasks/pages/TasksPage.vue') }],
+    children: [{ path: '', component: () => import('src/modules/issues/pages/IssuesPage.vue') }],
   },
 
   {
-    path: '/create-task',
+    path: '/create-issue',
     component: () => import('layouts/AdminLayout.vue'),
-    children: [{ path: '', component: () => import('src/modules/tasks/pages/CreateTaskPage.vue') }],
+    children: [{ path: '', component: () => import('src/modules/issues/pages/CreateIssuePage.vue') }],
   },
 
   {
-    path: '/task/:id',
+    path: '/issue/:id',
     component: () => import('layouts/AdminLayout.vue'),
-    children: [{ path: '', component: () => import('src/modules/tasks/pages/TaskPage.vue') }],
+    children: [{ path: '', component: () => import('src/modules/issues/pages/IssuePage.vue') }],
   },
 
   {

@@ -5,6 +5,9 @@ export interface IUser {
   password?: string
   confirmation_password?: string
   profile_name?: string
+  lang?: TProfileLanguage
   workspace_id?: string
   createdAt?: string
 }
+
+export type TProfileLanguage = 'en-US' | 'ru'

@@ -28,8 +28,7 @@ export default configure((ctx) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-
-
+      'i18n'
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -87,8 +86,6 @@ export default configure((ctx) => {
       //     : 'http://79.174.82.97:7000/api'
       // }
 
-      devtool: 'source-map',
-
       env: {
         API: ctx.dev
           ? 'http://localhost:7000/api'
@@ -109,7 +106,7 @@ export default configure((ctx) => {
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
-      lang: 'ru', // Quasar language pack
+      lang: 'en-US', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

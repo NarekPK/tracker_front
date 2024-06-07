@@ -10,18 +10,19 @@
         v-model="email"
         label="Email"
         lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Введите email']"
+        :rules="[ val => val && val.length > 0 || t('ENTER_EMAIL')]"
       />
 
       <q-input
         filled
         type="password"
         v-model="password"
-        label="Пароль"
+        :label="t('PASSWORD')"
+        :rules="[ val => val && val.length > 0 || t('ENTER_PASSWORD')]"
       />
 
       <div class="flex justify-center">
-        <q-btn label="Войти" type="submit" color="primary" class="text-bold"/>
+        <q-btn :label="t('SIGN_IN')" type="submit" color="primary" class="text-bold"/>
       </div>
     </q-form>
 
@@ -33,6 +34,10 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar'
 import { AuthApiService } from 'src/modules/auth/services'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 const $q = useQuasar()
 const router = useRouter()

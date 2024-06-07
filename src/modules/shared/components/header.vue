@@ -1,14 +1,14 @@
 <template>
   <div class="header-wrapper q-pa-sm q-mb-xl flex justify-center">
-    <a href="/"><img class="logo" src="~assets/logo.svg" alt=""></a>
+    <a href="/projects"><img class="logo" src="~assets/logo.svg" alt=""></a>
     <div class="header-menu">
       <q-btn-group outline class="menu">
-        <q-btn href="/projects" outline color="primary" label="Проекты" class="text-bold" />
-        <q-btn href="/boards" outline color="primary" label="Доски Agile" class="text-bold" disabled />
-        <q-btn href="/tasks" outline color="primary" label="Задачи" class="text-bold" />
-        <q-btn href="/articles" outline color="primary" label="База знаний" class="text-bold" disabled />
+        <q-btn href="/projects" outline color="primary" :label="t('PROJECTS')" class="text-bold" />
+        <q-btn href="/boards" outline color="primary" :label="t('AGILE_BOARDS')" class="text-bold" disabled />
+        <q-btn href="/issues" outline color="primary" :label="t('ISSUES')" class="text-bold" />
+        <q-btn href="/articles" outline color="primary" :label="t('KNOWLEDGE_BASE')" class="text-bold" disabled />
         <q-btn
-          label="Доступы"
+          :label="t('ACCESSES')"
           class="header-menu--item text-bold"
           outline
           color="primary"
@@ -16,16 +16,16 @@
           <q-menu auto-close class="bg-primary text-white text-bold">
             <q-list style="min-width: 100px">
               <q-item href="/users" clickable>
-                <q-item-section>Пользователи</q-item-section>
+                <q-item-section>{{ t('USERS') }}</q-item-section>
               </q-item>
               <q-item href="/groups" clickable disabled>
-                <q-item-section>Группы</q-item-section>
+                <q-item-section>{{ t('GROUPS') }}</q-item-section>
               </q-item>
               <q-item href="/organizations" clickable disabled>
-                <q-item-section>Организации</q-item-section>
+                <q-item-section>{{ t('ORGANIZATIONS') }}</q-item-section>
               </q-item>
               <q-item href="/roles" clickable>
-                <q-item-section>Роли</q-item-section>
+                <q-item-section>{{ t('ROLES') }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -40,28 +40,28 @@
         <q-menu auto-close class="text-bold text-primary">
           <q-list style="min-width: 100px">
             <q-item href="/projects" clickable>
-              <q-item-section>Проекты</q-item-section>
+              <q-item-section>{{ t('PROJECTS') }}</q-item-section>
             </q-item>
             <q-item href="/boards" clickable disabled>
-              <q-item-section>Доски Agile</q-item-section>
+              <q-item-section>{{ t('AGILE_BOARDS') }}</q-item-section>
             </q-item>
-            <q-item href="/tasks" clickable>
-              <q-item-section>Задачи</q-item-section>
+            <q-item href="/issues" clickable>
+              <q-item-section>{{ t('ISSUES') }}</q-item-section>
             </q-item>
             <q-item href="/articles" clickable disabled>
-              <q-item-section>База знаний</q-item-section>
+              <q-item-section>{{ t('KNOWLEDGE_BASE') }}</q-item-section>
             </q-item>
             <q-item href="/users" clickable>
-              <q-item-section>Пользователи</q-item-section>
+              <q-item-section>{{ t('USERS') }}</q-item-section>
             </q-item>
             <q-item href="/groups" clickable disabled>
-              <q-item-section>Группы</q-item-section>
+              <q-item-section>{{ t('GROUPS') }}</q-item-section>
             </q-item>
             <q-item href="/organizations" clickable disabled>
-              <q-item-section>Организации</q-item-section>
+              <q-item-section>{{ t('ORGANIZATIONS') }}</q-item-section>
             </q-item>
             <q-item href="/roles" clickable>
-              <q-item-section>Роли</q-item-section>
+              <q-item-section>{{ t('ROLES') }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -76,10 +76,14 @@
         <q-menu auto-close class="text-bold text-primary">
           <q-list style="min-width: 100px">
             <q-item :href="`/user/${usersStore.me?.user_id}`" clickable>
-              <q-item-section>Профиль</q-item-section>
+              <q-item-section>
+                {{ t('PROFILE') }}
+              </q-item-section>
             </q-item>
             <q-item clickable @click="logout">
-              <q-item-section>Выйти</q-item-section>
+              <q-item-section>
+                {{ t('LOG_OUT') }}
+              </q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -92,6 +96,10 @@
 import { useRouter } from 'vue-router'
 import { AuthApiService } from 'src/modules/auth/services'
 import { useUsersStore } from 'src/modules/users/users-store'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 const usersStore = useUsersStore()
 const router = useRouter()

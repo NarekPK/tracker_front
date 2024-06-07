@@ -1,6 +1,6 @@
 <template>
   <div class="project-wrapper">
-    <div class="project-title q-mb-lg text-h5 text-weight-bold">Проект</div>
+    <div class="project-title q-mb-lg text-h5 text-weight-bold">{{ t('PROJECT') }}</div>
     <div class="form-wrapper">
       <q-form
         @submit="onSubmit"
@@ -9,27 +9,27 @@
         <q-input
           bottom-slots
           v-model="projectName"
-          label="Имя"
-          :rules="[ val => val && val.length > 0 ]"
+          :label="t('NAME')"
+          :rules="[ val => val && val.length > 0 || t('ENTER_NAME')]"
           filled
         />
         <q-input
           bottom-slots
           v-model="projectDescription"
-          label="Описание"
+          :label="t('DESCRIPTION')"
           filled
           type="textarea"
           autogrow
         />
-        <q-select filled v-model="projectOwner" :options="usersOptions" label="Владелец проекта" />
-        <q-btn v-if="isChanged" label="Сохранить" type="submit" color="primary text-bold q-mt-lg" />
+        <q-select filled v-model="projectOwner" :options="usersOptions" :label="t('PROJECT_OWNER')" />
+        <q-btn v-if="isChanged" :label="t('SAVE')" type="submit" color="primary text-bold q-mt-lg q-mb-lg" />
       </q-form>
     </div>
-    <div class="project-title q-mb-lg text-h5 text-weight-bold">Доступы проекта</div>
+    <div class="project-title q-mb-lg text-h5 text-weight-bold">{{ t('PROJECT_ACCESSES') }}</div>
     <div class="project-controls q-mb-md">
       <div class="project-controls__buttons">
-        <q-btn label="Предоставить роль" color="primary" class="text-bold q-mr-md" rounded @click="showNewProjectRoleDialog = true" />
-        <q-btn v-if="showDeleteProjectRoleBtn" label="Отозвать роль" class="text-bold" rounded @click="showDeleteProjectRoleDialog = true" />
+        <q-btn :label="t('GRANT_ROLE')" color="primary" class="text-bold q-mr-md" rounded @click="showNewProjectRoleDialog = true" />
+        <q-btn v-if="showDeleteProjectRoleBtn" :label="t('REVOKE_ROLE')" class="text-bold" rounded @click="showDeleteProjectRoleDialog = true" />
       </div>
       <!-- <div class="project-controls__filters">
         <div class="q-pa-sm text-subtitle1">Посмотреть по:
@@ -60,7 +60,7 @@
             <q-checkbox v-model="item.isActive" @update:model-value="updateUserRolesChecks(item, 'user')" />
           </q-item-section>
           <q-item-label class="items-start">
-            <span>Пользователь </span>
+            <span>{{ t('USER') }}&nbsp;</span>
             <router-link
               class="text-subtitle1 text-weight-bold project-user-link"
               :to="`/user/${item.user.user_id}`"
@@ -72,7 +72,7 @@
         </q-item-section>
         <q-item-section class="justify-start">
           <q-item-label>
-            <div class="text-weight-bold q-pa-sm">Роль</div>
+            <div class="text-weight-bold q-pa-sm">{{ t('ROLE') }}</div>
             <div
               v-for="r in item.roles"
               :key="r.role_id"
@@ -86,7 +86,7 @@
                 :to="`/role/${r.role_id}`"
                 target="_blank"
               >
-                {{ r.name }}
+                {{ getRoleName(r.name) }}
               </router-link>
             </div>
           </q-item-label>
@@ -96,18 +96,18 @@
 
     <q-dialog v-model="showNewProjectRoleDialog">
       <q-card class="q-pa-lg form-wrapper">
-        <div class="text-h6 text-bold q-mb-md">Выдать роль</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('GRANT_ROLE') }}</div>
         <q-form
           @submit="onAddProjectRoleSubmit"
           class="new-role-form"
         >
-          <q-select filled v-model="roleToProvide" :options="rolesOptions" class="q-mb-lg" label="Выберите роль" />
+          <q-select filled v-model="roleToProvide" :options="rolesOptions" class="q-mb-lg" :label="t('SELECT_ROLE')" />
 
-          <q-select filled v-model="userToProvide" :options="usersOptions" label="Выберите пользователя" />
+          <q-select filled v-model="userToProvide" :options="usersOptions" :label="t('SELECT_USER')" />
 
           <div class="flex q-mt-lg">
-            <q-btn label="Предоставить" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('GRANT')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -115,18 +115,26 @@
 
     <q-dialog v-model="showDeleteProjectRoleDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">Отозвать роль</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('REVOKE_ROLE') }}</div>
         <div
           v-for="item in selectedUsersRoles"
           :key="item?.id"
           class="q-mb-md"
         >
-          <div class="q-mb-sm"> Подтвердите удаление у пользователя <b>{{ item.user.profile_name }}</b> ролей:</div>
+          <i18n-t
+            :keypath="'DELETE_USER_ROLE_WARNING.text'"
+            tag="div"
+            class="q-mb-sm"
+          >
+            <template v-slot:selected>
+              <b>{{ item.user.profile_name }}</b>
+            </template>
+          </i18n-t>
           <div
             class="text-bold q-ml-lg"
             v-for="role in item.roles.filter(r=> r.isActive)" :key="role.role_id"
           >
-            - {{ role.name }}
+            - {{ getRoleName(role.name) }}
           </div>
         </div>
         <q-form
@@ -134,8 +142,8 @@
           class="new-role-form"
         >
           <div class="flex q-mt-lg">
-            <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('DELETE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -152,6 +160,10 @@ import { useUsersStore } from 'src/modules/users/users-store'
 import { useRoute } from 'vue-router'
 import { useRolesStore } from 'src/modules/roles/roles-store'
 import { IProjectUserRole } from 'src/modules/projects/services/projects-api.interface'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 
 const route = useRoute()
@@ -199,7 +211,7 @@ async function onSubmit (event: Event) {
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Изменения сохранены'
+      message: t('CHANGES_SAVED')
     })
   } catch (e) {
     $q.notify({
@@ -217,7 +229,7 @@ rolesStore.getAllRoles()
 type TRoleOption = { value: string, label: string }
 const roleToProvide = ref<TRoleOption | null>(null)
 const rolesOptions = computed(() => rolesStore.roles.map(r => {
-  return { value: r.role_id, label: r.name } as TRoleOption
+  return { value: r.role_id, label: getRoleName(r.name ?? '') } as TRoleOption
 }))
 
 const userToProvide = ref<TUserOption | null>(null)
@@ -230,14 +242,14 @@ async function onAddProjectRoleSubmit () {
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: 'Выберите пользователя для роли'
+      message: t('SELECT_USER_FOR_ROLE')
     })
   } else if (!roleToProvide.value) {
     $q.notify({
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: 'Выберите роль для пользователя'
+      message: t('SELECT_ROLE_FOR_USER')
     })
   } else {
   try {
@@ -250,7 +262,7 @@ async function onAddProjectRoleSubmit () {
         color: 'primary',
         textColor: 'white',
         icon: 'check_circle',
-        message: 'Роль предоставлена'
+        message: t('ROLE_GRANTED')
       })
       projectsStore.getProjectRoles(route.params.id as string)
     } catch (e) {
@@ -329,7 +341,7 @@ async function onDeleteProjectRoleSubmit () {
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Роль удалена'
+      message: t('ROLE_DELETED')
     })
     await projectsStore.getProjectRoles(route.params.id as string)
   } catch (e) {
@@ -343,6 +355,10 @@ async function onDeleteProjectRoleSubmit () {
   }
 
   showDeleteProjectRoleDialog.value = false
+}
+
+function getRoleName (name: string) {
+  return (name?.startsWith('RN_') ? t(name) : name) || ''
 }
 
 // function getButtonColor (type: TRolesFilters) {

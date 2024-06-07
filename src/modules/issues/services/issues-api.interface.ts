@@ -1,11 +1,11 @@
-export interface ITask {
+export interface IIssue {
   name?: string
   description?: string
-  task_author?: string
+  issue_author?: string
   custom_fields_value?: []
   project_id?: string
   workspace_id?: string
-  task_id?: string
+  issue_id?: string
   project?: {
     name?: string
     project_id?: string

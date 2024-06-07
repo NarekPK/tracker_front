@@ -6,7 +6,7 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        Раздел в разработке
+        {{ t('IN_DEVELOPMENT') }}
       </div>
 
       <q-btn
@@ -15,7 +15,7 @@
         text-color="blue"
         unelevated
         to="/projects"
-        label="На Главную"
+        :label="t('GO_HOME')"
         no-caps
       />
     </div>
@@ -23,7 +23,12 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineOptions({
   name: 'ErrorNotFound'
-});
+})
+
 </script>

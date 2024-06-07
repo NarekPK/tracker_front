@@ -4,8 +4,8 @@
       <div class="main-header">
         <img class="logo q-mb-md" src="~assets/logo.svg" alt="">
         <div class="auth-buttons q-mb-md">
-          <q-btn @click="handleLogin" label="Войти" class="text-bold"/>
-          <q-btn href="/register" label="Зарегистрироваться" type="submit" color="primary" class="text-bold"/>
+          <q-btn @click="handleLogin" :label="t('SIGN_IN')" class="text-bold"/>
+          <q-btn href="/register" :label="t('CREATE_ACCOUNT')" type="submit" color="primary" class="text-bold"/>
         </div>
         <!-- <q-btn label="Сбросить" type="reset" color="primary" flat class="q-ml-sm" /> -->
       </div>
@@ -18,6 +18,10 @@
 <script setup lang="ts">
 import { AuthApiService } from 'src/modules/auth/services'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 const router = useRouter()
 

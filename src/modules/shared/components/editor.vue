@@ -8,7 +8,7 @@
         @click="toggleBold"
       >
         <q-icon class="editor-menu__icon" name="format_bold" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Жирный</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('BOLD') }}</q-tooltip>
       </button>
       <!-- ./BOLD -->
 
@@ -19,7 +19,7 @@
         @click="toggleItalic"
       >
         <q-icon class="editor-menu__icon" name="format_italic"/>
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Курсив</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('ITALICS') }}</q-tooltip>
       </button>
       <!-- ./ITALIC -->
 
@@ -30,7 +30,7 @@
         @click="editor?.chain().focus().toggleUnderline().run()"
       >
         <q-icon class="editor-menu__icon" name="format_underlined" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Подеркнутый</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('UNDERLINED') }}</q-tooltip>
       </button>
       <!-- ./UNDERLINE -->
 
@@ -41,7 +41,7 @@
         @click="editor?.commands.toggleStrike()"
       >
         <q-icon class="editor-menu__icon" name="strikethrough_s" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Зачеркнутый</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('STRIKED') }}</q-tooltip>
       </button>
       <!-- ./STRIKE -->
 
@@ -49,7 +49,7 @@
 
       <button class="editor-menu__button">
         <q-icon class="editor-menu__icon" name="colorize" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Цвет текста</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('COLOR') }}</q-tooltip>
         <q-menu>
           <q-color
             v-model="currentColor"
@@ -67,7 +67,7 @@
         @click="editor?.chain().focus().toggleBulletList().run()"
       >
         <q-icon class="editor-menu__icon" name="format_list_bulleted" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Маркированный список</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('BULLET_LIST') }}</q-tooltip>
       </button>
       <button
         class="editor-menu__button"
@@ -75,7 +75,7 @@
         @click="editor?.chain().focus().toggleOrderedList().run()"
       >
         <q-icon class="editor-menu__icon" name="format_list_numbered" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Нумерованный список</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('ORDERED_LIST') }}</q-tooltip>
       </button>
 
       <!-- FONT-SIZE -->
@@ -108,7 +108,7 @@
         @click="editor?.commands.toggleCodeBlock()"
       >
         <q-icon class="editor-menu__icon" name="code" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Код</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('CODE') }}</q-tooltip>
       </button>
 
       <!-- ./CODE -->
@@ -118,7 +118,7 @@
         @click="editor?.chain().focus().unsetAllMarks().run()"
       >
         <q-icon class="editor-menu__icon" name="auto_fix_normal" />
-        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">Сбросить стили</q-tooltip>
+        <q-tooltip anchor="top middle" self="top middle" :offset="[25, 25]">{{ t('RESET_STYLES') }}</q-tooltip>
       </button>
     </div>
 
@@ -139,6 +139,9 @@ import TextStyle from '@tiptap/extension-text-style'
 import TextCustomStyles from 'src/modules/shared/utils/editor/extension-custom-styles'
 import HardBreak from '@tiptap/extension-hard-break'
 import Code from '@tiptap/extension-code'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const emit = defineEmits(['editor-focus', 'editor-blur', 'update:value'])
 const props = defineProps({

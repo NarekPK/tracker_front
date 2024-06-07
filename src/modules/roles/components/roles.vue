@@ -1,6 +1,6 @@
 <template>
   <div class="roles-wrapper">
-    <div class="roles-title q-mb-lg text-h5 text-weight-bold">{{ `Ролей: ${roles.length}` }}</div>
+    <div class="roles-title q-mb-lg text-h5 text-weight-bold">{{ `${t('ROLES')}: ${roles.length}` }}</div>
     <q-table
       flat
       :rows="roles"
@@ -21,18 +21,18 @@
             color="primary"
             class="roles-link text-subtitle1"
           >
-              {{ props.row.name }}
+              {{ t(props.row.name) }}
           </router-link>
         </q-td>
       </template>
     </q-table>
 
-    <q-btn label="Новая роль" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewRoleDialog = true" />
-    <q-btn v-if="selected.length" label="Удалить роль" class="text-bold q-mt-md" rounded @click="showDeleteRoleDialog = true" />
+    <q-btn :label="t('NEW_ROLE')" color="primary" class="text-bold q-mt-md q-mr-md" rounded @click="showNewRoleDialog = true" />
+    <q-btn v-if="selected.length" :label="t('DELETE_ROLE')" class="text-bold q-mt-md" rounded @click="showDeleteRoleDialog = true" />
 
     <q-dialog v-model="showNewRoleDialog">
       <q-card class="q-pa-lg form-wrapper">
-        <div class="text-h6 text-bold q-mb-md">Создание новой роли</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_ROLE') }}</div>
         <q-form
           @submit="onAddRoleSubmit"
           class="new-role-form"
@@ -40,15 +40,15 @@
           <q-input
             bottom-slots
             v-model="roleName"
-            label="Имя"
-            :rules="[ val => val && val.length > 0 ]"
+            :label="t('NAME')"
+            :rules="[ val => val && val.length > 0 || t('ENTER_ROLE_NAME')]"
             filled
           />
 
           <q-input
             bottom-slots
             v-model="roleDescription"
-            label="Описание"
+            :label="t('DESCRIPTION')"
             filled
             type="textarea"
             autogrow
@@ -56,8 +56,8 @@
 
 
           <div class="flex q-mt-lg">
-            <q-btn label="Создать" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('CREATE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -65,15 +65,22 @@
 
     <q-dialog v-model="showDeleteRoleDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">Удалить роль?</div>
-        После подтверждения этого действия роль <b>{{selected[0].name}}</b> будет удалена.
+        <div class="text-h6 text-bold q-mb-md">{{ t('DELETE_ROLE') }}?</div>
+        <i18n-t
+          :keypath="'DELETE_ROLE_WARNING.text'"
+          tag="div"
+        >
+          <template v-slot:selected>
+            <b>{{ getRoleName(selected[0].name ?? '') }}</b>
+          </template>
+        </i18n-t>
         <q-form
           @submit="onDeleteRoleSubmit"
           class="new-role-form"
         >
           <div class="flex q-mt-lg">
-            <q-btn label="Удалить" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn label="Отмена" v-close-popup/>
+            <q-btn :label="t('DELETE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
       </q-card>
@@ -89,6 +96,10 @@ import { IRole } from 'src/modules/roles/services/roles-api.interface'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useRolesStore } from 'src/modules/roles/roles-store'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 const usersStore = useUsersStore()
 const rolesStore = useRolesStore()
@@ -104,12 +115,12 @@ let columns = ref([
   {
     name: 'name',
     required: true,
-    label: 'Имя и фамилия',
+    label: t('PERMISSIONS'),
     align: 'left',
     field: (role: IRole) => role.name,
     sortable: true
   },
-  { name: 'permissions', align: 'left', label: 'Разрешения', field: 'permissions', format: (val: string) => val.length, sortable: true }
+  { name: 'permissions', align: 'left', label: t('PERMISSIONS'), field: 'permissions', format: (val: string) => val.length, sortable: true }
 ])
 
 rolesStore.getAllRoles()
@@ -132,7 +143,7 @@ async function onAddRoleSubmit () {
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Роль создана'
+      message: t('ROLE_CREATED')
     })
     router.push(`/role/${newRole.role_id}`)
   } catch (e) {
@@ -155,7 +166,7 @@ async function onDeleteRoleSubmit () {
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: 'Роль удалена'
+      message: t('ROLE_DELETED')
     })
     rolesStore.getAllRoles()
   } catch (e) {
@@ -169,6 +180,10 @@ async function onDeleteRoleSubmit () {
 
   selected.value = []
   showDeleteRoleDialog.value = false
+}
+
+function getRoleName (name: string) {
+  return (name?.startsWith('RN_') ? t(name) : name) || ''
 }
 
 </script>
