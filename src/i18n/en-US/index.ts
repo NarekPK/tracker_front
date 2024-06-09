@@ -44,6 +44,18 @@ export default {
   'ISSUE_UPDATED': 'Issue updated',
   'ENTER_SEARCH_REQUEST': 'Enter search request',
   'NO_ISSUES_FOUND': 'No issues found for your request',
+  'WRITE_COMMENT': 'Write a comment',
+  'ISSUE_WITHOUT_DESCRIPTION': 'This issue doesn\'t have a description yet.',
+  'ADD_COMMENT': 'Add a comment',
+  'ISSUE_COMMENT_ADDED': 'The comment has been added',
+  'ISSUE_COMMENTED': 'Commented',
+  'EDIT_ISSUE_COMMENT': 'Edit comment',
+  'DELETE_ISSUE_COMMENT': 'Delete comment',
+  'DELETE_ISSUE_COMMENT_WARNING': 'Are you sure you want to delete comment?',
+  'ISSUE_COMMENT_DELETED': 'The comment has been deleted',
+  'ISSUE_COMMENT_UPDATED': 'The comment has been updated',
+  'COMMENTS': 'Comments',
+
 
   'NEW_PROJECT': 'New project',
   'DELETE_PROJECT': 'Delete project',

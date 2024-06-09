@@ -28,6 +28,7 @@
         class="issues-filter issues-filter-search"
         outlined
         :placeholder="t('ENTER_SEARCH_REQUEST')"
+        clearable
       >
         <template v-slot:prepend>
           <q-icon name="search" />
@@ -206,7 +207,7 @@ const filterAuthor = ref<TUserOption | null>(null)
 const filterText = ref('')
 
 function getFormatText (text: string = '') {
-  return text.toLowerCase().trim()
+  return text?.toLowerCase().trim()
 }
 
 const issuesFiltered = computed(() => {

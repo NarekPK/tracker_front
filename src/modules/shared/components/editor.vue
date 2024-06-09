@@ -1,6 +1,6 @@
 <template>
   <div class="editor" @click.prevent>
-    <div class="editor-menu">
+    <div class="editor-menu" v-if="showMenu || value">
       <!-- BOLD -->
       <button
         class="editor-menu__button"
@@ -86,6 +86,7 @@
         v-model="currentFontSize"
         @update:model-value="editor?.chain().focus().setStyles({ fontSize: $event}).run()"
         borderless
+        :dense="true"
       />
       <!-- ./FONT-SIZE -->
 
@@ -125,20 +126,24 @@
     <editor-content
       :editor="editor"
       class="editor-content"
+      :class="{ 'editor-content--fixed': fixedHeight }"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import TextStyle from '@tiptap/extension-text-style'
 import TextCustomStyles from 'src/modules/shared/utils/editor/extension-custom-styles'
+import { clearTagsWithExclusions } from 'src/modules/shared/utils/editor/clear-tags'
 import HardBreak from '@tiptap/extension-hard-break'
+import { Fragment } from '@tiptap/pm/model'
 import Code from '@tiptap/extension-code'
+import Placeholder from '@tiptap/extension-placeholder'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -148,12 +153,69 @@ const props = defineProps({
   value: {
     type: String,
     default: ''
-  }
+  },
+  showMenu: {
+    type: Boolean,
+    default: true
+  },
+  fixedHeight: {
+    type: Boolean,
+    default: true
+  },
+  isComment: {
+    type: Boolean,
+    default: false
+  },
 })
 
 // editor init
 const options = {
   content: props.value,
+  editorProps: {
+    transformPastedText(text) {
+      return text.replace(/\u00a0|&nbsp;/g, ' ')
+    },
+    transformPastedHTML(html) {
+      return clearTagsWithExclusions(html.replace(/\u00a0|&nbsp;/g, ' '), ['br', 'p'])
+    },
+    transformPasted: (slice, editorView) => {
+      const fragment = slice.content
+
+      const isMultipleParagraphs = fragment.content.length > 1 && fragment.content.every(node => node.type.name === 'paragraph')
+
+      // чистим от всех marks
+      if (!isMultipleParagraphs) {
+        fragment.descendants(child => {
+          child.marks = []
+        })
+        slice.content = fragment
+        return slice
+      }
+
+      // при вставке нескольких абзацев необходимо их склеить в одну node для корректной генерации HTML
+      const nodes = []
+
+      fragment.forEach(child => {
+        if (child.textContent && child.textContent.trim()) {
+          const nodeText = editorView.state.schema.text(child.textContent)
+          nodes.push(nodeText)
+        }
+      })
+
+      // между абзацами ставим 2 <br>
+      const brEl = editorView.state.schema.nodes.hardBreak
+      const breakLineArray = [brEl.create(), brEl.create()]
+
+      const nodesWithBreaks = nodes.reduce((acc, curr, index) => {
+        if (index) return [...acc, ...breakLineArray, curr]
+        return [...acc, curr]
+      }, [])
+
+      const newFragment = new Fragment(nodesWithBreaks)
+      slice.content = newFragment
+      return slice
+    }
+  },
   extensions: [
     StarterKit.configure({
       bold: false,
@@ -165,11 +227,16 @@ const options = {
     TextCustomStyles,
     Link,
     Underline,
-    Code
+    Code,
+    Placeholder.configure({
+      placeholder: props.isComment ? t('WRITE_COMMENT') : '',
+    })
   ],
   onUpdate: ({ editor }) => {
-    // const html = editor.getHTML().replace(/\u2028/g, ' ').replace(/(<\/p>)|(<p>)/g, '').trim().replace(/<br>$/, '<br><br>')
-    emit('update:value', editor.getHTML())
+    editorChange.value = true
+    // const html = editor.getHTML().replace(/(<\/p>)|(<p>)/g, '').trim().replace(/<br>$/, '<br><br>')
+    const html = editor.getHTML().replace('<p></p>', '')
+    emit('update:value', html)
     currentFontSize.value = editor.value?.getAttributes('textStyle').fontSize || computedStyles.fontSize
   },
   onFocus ({ event }) {
@@ -178,11 +245,16 @@ const options = {
     computedStyles.fontStyle = fontStyle
     computedStyles.fontSize = fontSize
     computedStyles.color = color
+    emit('editor-focus')
+  },
+  onBlur ({ event }) {
+    if (!event.relatedTarget?.closest('.editor')) emit('editor-blur')
   }
 }
 
 const editor = useEditor(options)
 const computedStyles = reactive({})
+const editorChange = ref(false)
 
 // bold
 const weight = computed(() => editor.value?.getAttributes('textStyle').fontWeight || computedStyles.fontWeight)
@@ -213,38 +285,56 @@ function generateFontSizes (min, max, step) {
 // color
 const currentColor = ref(editor.value?.getAttributes('textStyle').color || computedStyles.color)
 
+watch(() => props.value, (val) => {
+  if (editor.value && !editorChange.value) {
+    editor.value.commands.setContent(val, false)
+  }
+  editorChange.value = false
+})
+
 </script>
 
 <style lang="sass" scoped>
 .editor
+  border-radius: 8px
   box-shadow: 0px 3px 12px rgba(10, 8, 58, 0.13)
+  overflow: hidden
+  background: #fff
 
 .editor-content:deep
   .ProseMirror
     outline: none
-    min-height: 500px
     max-height: 100%
     border-radius: 4px
     padding: 10px
   code
     background: #f5f5f5
+  .is-editor-empty:first-child::before
+    color: $secondary-text
+    content: attr(data-placeholder)
+    float: left
+    height: 0
+    pointer-events: none
+
+.editor-content--fixed:deep
+  .ProseMirror
+    min-height: 500px
 
 .editor-menu
   display: flex
   flex-wrap: wrap
   align-items: center
-  min-height: 50px
+  min-height: 40px
   background: #FFFFFF
   box-shadow: 0px 3px 12px rgba(10, 8, 58, 0.13)
   border-radius: 4px
-  padding-left: 12px
-  padding-right: 12px
+  padding: 5px 12px
+  gap: 8px
 
 .editor-menu__button
   background: none
   border: none
   cursor: pointer
-  margin-right: 8px
   flex-shrink: 0
   display: flex
   align-items: center

@@ -17,3 +17,15 @@ export interface IIssue {
   createdAt?: string
   updatedAt?: string
 }
+
+export interface IIssueComment {
+  text?: string
+  user_id?: string
+  issue_id?: string
+  comment_id?: string
+  user?: {
+    profile_name?: string
+    user_id?: string
+  }
+  createdAt?: string
+}

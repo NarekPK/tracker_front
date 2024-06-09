@@ -31,13 +31,10 @@
         <div class="issue-base-info__item-text">{{ getIssueCreationDate(issue.createdAt) }}</div>
       </div>
     </div>
-    <div v-if="!showEditMode" class="issue-content">
+    <div v-show="!showEditMode" class="issue-content">
       <div class="q-mb-lg text-h4 text-weight-bold issue-title-wrapper">
         <div class="issue-title">{{ issue.name }}</div>
         <div class="issue-controls">
-          <!-- <button class="issue-controls__item">
-            <q-icon class="issue-controls__icon" name="edit" />
-          </button> -->
           <q-btn
             class="issue-controls__btn"
             icon="edit"
@@ -58,9 +55,14 @@
           ></q-btn>
         </div>
       </div>
-      <div class="issue-description q-mb-md" v-html="issue.description"></div>
+      <div
+        class="issue-description q-mb-md"
+        :class="{ 'issue-description--empty': !issue.description }"
+        v-html="issue.description || t('ISSUE_WITHOUT_DESCRIPTION')"
+      ></div>
+      <IssueComments />
     </div>
-    <div v-else>
+    <div v-show="showEditMode">
       <q-form
         @submit="onUpdateIssueSubmit"
         class="issue-form"
@@ -77,7 +79,7 @@
           <editor
             class="editor"
             :value="issue.description"
-            @update:value="issue.description = $event"
+            @update:value="newDescription = $event"
           />
 
         <div class="flex q-mt-lg">
@@ -120,7 +122,7 @@ import { date } from 'quasar'
 import { useRoute, useRouter } from 'vue-router'
 import editor from 'src/modules/shared/components/editor.vue'
 import { useI18n } from 'vue-i18n'
-
+import IssueComments from 'src/modules/issues/components/issue-comments.vue'
 
 const { t } = useI18n()
 
@@ -130,10 +132,12 @@ const router = useRouter()
 const $q = useQuasar()
 
 const issue = ref<IIssue | null>(null)
+const newDescription = ref('')
 
 async function getIssue (issue_id: string) {
   try {
     issue.value = await IssuesApiService.getIssue(issue_id)
+    newDescription.value = issue.value?.description ?? ''
   } catch (error) {
     console.log(error)
   }
@@ -170,9 +174,10 @@ async function onUpdateIssueSubmit (event: Event) {
   try {
     await IssuesApiService.updateIssue({
       name: issue.value?.name,
-      description: issue.value?.description,
+      description: newDescription.value,
       issue_id: issue.value?.issue_id
     })
+    if (issue.value) issue.value.description = newDescription.value
     $q.notify({
       color: 'primary',
       textColor: 'white',
@@ -236,5 +241,9 @@ async function onUpdateIssueSubmit (event: Event) {
   textarea
     font-weight: bold
     font-size: 24px
-
+.issue-description
+  border-bottom: 1px dashed rgba(10, 8, 58, 0.13)
+  padding-bottom: 24px
+.issue-description--empty
+  color: $secondary-text
 </style>
