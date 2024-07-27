@@ -50,7 +50,7 @@
         <q-form
           class="issue-comment-form"
         >
-          <editor
+          <Editor
             class="editor comment-editor"
             :value="comment.text"
             :fixedHeight="false"
@@ -78,7 +78,7 @@
     <q-form
       class="issue-comment-form"
     >
-      <editor
+      <Editor
         class="editor comment-editor"
         :value="newComment"
         :showMenu="editorFocused"
@@ -126,7 +126,7 @@ import { IssuesApiService } from 'src/modules/issues/services'
 import { IIssueComment } from 'src/modules/issues/services/issues-api.interface'
 import { date } from 'quasar'
 import { useRoute } from 'vue-router'
-import editor from 'src/modules/shared/components/editor.vue'
+import Editor from 'src/modules/shared/components/editor.vue'
 import { useI18n } from 'vue-i18n'
 import { useUsersStore } from 'src/modules/users/users-store'
 
@@ -252,7 +252,7 @@ async function onDeleteCommentSubmit (event: Event) {
 
 <style lang="sass" scoped>
 .comment-editor
-  border: 1px solid $primary
+  border: 1px dashed $secondary-text
 .issue-comments__item
   border-radius: 8px
   &:hover

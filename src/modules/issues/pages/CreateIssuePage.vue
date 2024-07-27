@@ -1,6 +1,6 @@
 <template>
   <q-page class="create-issue-page row items-start justify-start">
-    <create-issue />
+    <CreateIssue />
   </q-page>
 </template>
 

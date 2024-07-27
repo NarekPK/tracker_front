@@ -1,6 +1,6 @@
 <template>
   <q-page class="issue-page row items-start justify-start">
-    <issue />
+    <Issue />
   </q-page>
 </template>
 
@@ -15,6 +15,7 @@ defineOptions({
 
 <style lang="sass" scoped>
 .issue-page
-  max-width: 1024px
+  max-width: 1300px
   margin: 0 auto
+  padding: 0
 </style>

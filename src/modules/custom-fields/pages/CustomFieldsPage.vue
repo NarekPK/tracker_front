@@ -1,14 +1,14 @@
 <template>
   <q-page class="users-page row items-start justify-start">
-    <Users />
+    <CustomFields />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import Users from 'src/modules/users/components/users.vue'
+import CustomFields from 'src/modules/custom-fields/components/custom-fields.vue'
 
 defineOptions({
-  name: 'UsersPage'
+  name: 'CustomFieldsPage'
 });
 
 </script>

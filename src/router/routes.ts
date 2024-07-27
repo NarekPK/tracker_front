@@ -75,7 +75,19 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/boards',
-    alias: ['/articles', '/groups', '/organizations'],
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', name: 'boards', component: () => import('src/modules/boards/pages/BoardsPage.vue') }],
+  },
+
+  {
+    path: '/custom-fields',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [{ path: '', name: 'custom-fields', component: () => import('src/modules/custom-fields/pages/CustomFieldsPage.vue') }],
+  },
+
+  {
+    path: '/articles',
+    alias: ['/groups', '/organizations'],
     component: () => import('pages/InDevelopment.vue'),
   },
 

@@ -9,7 +9,6 @@
         filled
         v-model="email"
         label="Email"
-        lazy-rules
         :rules="[ val => val && val.length > 0 || t('ENTER_EMAIL')]"
       />
 

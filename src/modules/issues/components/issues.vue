@@ -39,8 +39,8 @@
         :options="projectsOptions"
         class="issues-filter q-mb-lg"
         :label="t('PROJECT')"
-        clearable
         :dense="true"
+        clearable
       />
       <q-select
         v-model="filterAuthor"
@@ -93,10 +93,19 @@
         <router-link
           :to="`/issue/${issue.issue_id}`"
           color="primary"
-          class="issues__link text-subtitle1"
+          class="issues__link text-subtitle1 q-mb-sm"
         >
           {{ issue.name }}
         </router-link>
+        <IssueCustomFields
+          v-if="allCustomFields.length"
+          class="issue-custom-fields issue-custom-fields--list"
+          :customFields="issue.custom_fields"
+          :projectCustomFields="getProjectCustomFields(issue.project?.project_id)"
+          :show-field-name="false"
+          :show-names-tooltip="true"
+          @updateFieldValue="updateFieldValue($event, issue)"
+        />
       </q-card>
     </div>
 
@@ -111,7 +120,7 @@
 
           <div class="flex q-mt-lg">
             <q-btn :label="t('CREATE')" type="submit" color="primary" class="text-bold q-mr-md" />
-            <q-btn :label="t('CANCEL')" v-close-popup/>
+            <q-btn :label="t('CANCEL')" v-close-popup />
           </div>
         </q-form>
       </q-card>
@@ -129,7 +138,11 @@ import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useI18n } from 'vue-i18n'
-
+import IssueCustomFields from 'src/modules/issues/components/issue-custom-fields.vue'
+import { IssuesApiService } from 'src/modules/issues/services'
+import { IIssue, IIssueCustomField } from 'src/modules/issues/services/issues-api.interface'
+import { ICustomField } from 'src/modules/custom-fields/services/custom-fields-api.interface'
+import { CustomFieldsApiService } from 'src/modules/custom-fields/services'
 
 const { t } = useI18n()
 
@@ -224,6 +237,45 @@ const issuesFiltered = computed(() => {
   })
 })
 
+const allCustomFields = ref<ICustomField[]>([])
+
+getAllCustomFields()
+
+async function getAllCustomFields () {
+  allCustomFields.value = await CustomFieldsApiService.getAllCustomFields()
+}
+
+function getProjectCustomFields (project_id: string) {
+  return allCustomFields.value.filter((p) => p.project_custom_fields.some(f => f.project_id === project_id))
+}
+
+async function updateFieldValue ({ id, value, option_id }: IIssueCustomField, issue: IIssue) {
+  try {
+    const newCustomFields =[
+      ...issue.custom_fields.filter(f => f.id !== id) ?? [],
+      option_id ? { id, value, option_id } : { id, value }
+    ]
+    await IssuesApiService.updateIssue({
+      custom_fields: newCustomFields,
+      issue_id: issue.issue_id
+    })
+    if (issue) issue.custom_fields = newCustomFields
+    $q.notify({
+      color: 'primary',
+      textColor: 'white',
+      icon: 'check_circle',
+      message: t('ISSUE_UPDATED')
+    })
+  } catch (e) {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: e.message
+    })
+  }
+}
+
 </script>
 
 <style lang="sass" scoped>
@@ -238,6 +290,8 @@ const issuesFiltered = computed(() => {
   width: 100%
 .issues__item
   width: 100%
+  display: flex
+  flex-direction: column
 .issues__intro
   display: flex
   align-items: center
@@ -265,5 +319,22 @@ const issuesFiltered = computed(() => {
   text-align: center
 .issues-filter-search
   width: 80%
-
+.issue-custom-fields--list
+  flex-direction: row
+  justify-content: flex-start
+  gap: 0
+  &:deep
+    .custom-field-wrapper
+      padding-right: 10px
+      overflow: hidden
+      flex-shrink: 1
+      white-space: nowrap
+    .custom-field-wrapper + .custom-field-wrapper
+      padding-left: 10px
+      border-left: 1px solid #e9e9e9
+    .custom-field__value
+      color: $secondary-text
+      font-weight: 400
+      &:hover
+        color: $primary
 </style>

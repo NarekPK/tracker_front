@@ -1,8 +1,8 @@
-import { IIssue, IIssueComment } from './issues-api.interface'
+import { IIssue, IIssueCreate, IIssueUpdate, IIssueComment } from './issues-api.interface'
 import MainApiService from 'src/api/main-api.service'
 
 export default class IssuesApiService {
-  static async createIssue (issueInfo: IIssue): Promise<IIssue> {
+  static async createIssue (issueInfo: IIssueCreate): Promise<IIssue> {
     return await MainApiService.fetchApi('/issues/create-issue', 'POST', issueInfo)
   }
 
@@ -18,7 +18,11 @@ export default class IssuesApiService {
     return await MainApiService.fetchApi('/issues/get-issues')
   }
 
-  static async updateIssue (issueInfo: IIssue): Promise<IIssue> {
+  static async getProjectIssues (project_id: string): Promise<IIssue[]> {
+    return await MainApiService.fetchApi(`/issues/get-project-issues/${project_id}`)
+  }
+
+  static async updateIssue (issueInfo: IIssueUpdate): Promise<IIssue> {
     return await MainApiService.fetchApi('/issues/update-issue', 'PATCH', issueInfo)
   }
 
@@ -41,5 +45,9 @@ export default class IssuesApiService {
   static async updateIssueComment (commentInfo: IIssueComment): Promise<IIssueComment> {
     return await MainApiService.fetchApi('/issues-comments/update-comment', 'PATCH', commentInfo)
   }
+
+  // static async updateIssueCustomFieldValue (fieldInfo: IIssueCustomField[]): Promise<IIssueCustomField> {
+  //   return await MainApiService.fetchApi('/issues-comments/update-comment', 'PATCH', fieldInfo)
+  // }
 
 }

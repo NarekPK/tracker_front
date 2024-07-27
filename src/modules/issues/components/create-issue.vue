@@ -15,7 +15,7 @@
           :rules="[ val => val && val.length > 0 || t('ENTER_ISSUE_HEADING')]"
         />
 
-        <editor
+        <Editor
           class="editor"
           :value="issueDescription"
           @update:value="issueDescription = $event"
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import editor from 'src/modules/shared/components/editor.vue'
+import Editor from 'src/modules/shared/components/editor.vue'
 import { useQuasar } from 'quasar'
 import { IssuesApiService } from 'src/modules/issues/services'
 import { useRouter, useRoute } from 'vue-router'
