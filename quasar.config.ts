@@ -82,14 +82,14 @@ export default configure((ctx) => {
 
       // env: {
       //   API: ctx.dev
-      //     ? 'http://79.174.82.97:7000/api'
-      //     : 'http://79.174.82.97:7000/api'
+      //     ? 'http://narek-tech.online:7000/api'
+      //     : 'http://narek-tech.online:7000/api'
       // }
 
       env: {
         API: ctx.dev
           ? 'http://localhost:7000/api'
-          : 'http://79.174.82.97:7000/api'
+          : 'http://narek-tech.online:7000/api'
       }
     },
 

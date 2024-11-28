@@ -113,11 +113,13 @@ watch(() => role.value, () => {
 async function onSubmit (event: Event) {
   event.preventDefault()
   try {
-    rolesStore.role = await RolesApiService.updateRole({
-      name: roleName.value,
-      description: roleDescription.value,
-      role_id: role.value?.role_id
-    })
+    rolesStore.role = await RolesApiService.updateRole(
+      role.value?.role_id as string,
+      {
+        name: roleName.value,
+        description: roleDescription.value
+      }
+    )
     $q.notify({
       color: 'primary',
       textColor: 'white',
@@ -139,10 +141,13 @@ async function updatePermissions (permission: IPermission) {
     [ ...new Set([...(role.value?.permissions || []), permission.permission_key, ...(permission?.implied_permissions?.map(p => p.permission_key) || []) ])] :
     role.value?.permissions?.filter(p => p !== permission.permission_key && (permission?.dependent_permissions ? permission?.dependent_permissions?.every(d => d.permission_key !== p) : true))
 
-  rolesStore.role = await RolesApiService.updateRole({
-    permissions: newPermissions,
-    role_id: role.value?.role_id
-  })
+  rolesStore.role = await RolesApiService.updateRole(
+    role.value?.role_id as string,
+    {
+      permissions: newPermissions,
+      role_id: role.value?.role_id
+    }
+  )
 }
 
 function getButtonColor (type: TPermissionFilters) {

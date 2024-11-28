@@ -1,7 +1,9 @@
 # tracker
-http://79.174.82.97:9000/
 
-tracker
+### Tracker: http://narek-tech.online/
+
+### Docs: http://narek-tech.online:7000/api/docs/
+
 
 ## Install the dependencies
 ```bash

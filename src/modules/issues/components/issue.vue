@@ -175,7 +175,7 @@ async function onDeleteIssueSubmit (event: Event) {
   event.preventDefault()
   try {
     if (!issue.value?.issue_id) return
-    await IssuesApiService.deleteIssue({ issue_id: issue.value?.issue_id })
+    await IssuesApiService.deleteIssue(issue.value?.issue_id)
     router.push('/issues')
   } catch (e) {
     $q.notify({
@@ -192,11 +192,13 @@ const showEditMode = ref(false)
 async function onUpdateIssueSubmit (event: Event) {
   event.preventDefault()
   try {
-    await IssuesApiService.updateIssue({
-      name: issue.value?.name,
-      description: newDescription.value,
-      issue_id: issue.value?.issue_id
-    })
+    await IssuesApiService.updateIssue(
+      issue.value?.issue_id as string,
+      {
+        name: issue.value?.name,
+        description: newDescription.value
+      }
+    )
     if (issue.value) issue.value.description = newDescription.value
     $q.notify({
       color: 'primary',
@@ -241,10 +243,12 @@ async function updateFieldValue ({ id, value, option_id }: IIssueCustomField) {
       ...issue.value?.custom_fields.filter(f => f.id !== id) ?? [],
       option_id ? { id, value, option_id } : { id, value }
     ]
-    await IssuesApiService.updateIssue({
-      custom_fields: newCustomFields,
-      issue_id: issue.value?.issue_id
-    })
+    await IssuesApiService.updateIssue(
+      issue.value?.issue_id as string,
+      {
+        custom_fields: newCustomFields
+      }
+    )
     if (issue.value) issue.value.custom_fields = newCustomFields
     $q.notify({
       color: 'primary',

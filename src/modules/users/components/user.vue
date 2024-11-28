@@ -113,12 +113,14 @@ watch(() => user.value, () => {
 async function onSubmit (event: Event) {
   event.preventDefault()
   try {
-    usersStore.user = await UsersApiService.updateUser({
-      user_name: userName.value,
-      profile_name: profileName.value,
-      lang: lang.value.value as TProfileLanguage,
-      user_id: user.value?.user_id
-    })
+    usersStore.user = await UsersApiService.updateUser(
+      user.value?.user_id as string,
+      {
+        user_name: userName.value,
+        profile_name: profileName.value,
+        lang: lang.value.value as TProfileLanguage
+      }
+    )
     $q.notify({
       color: 'primary',
       textColor: 'white',

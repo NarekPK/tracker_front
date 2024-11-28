@@ -3,19 +3,19 @@ import { IRole, IPermission } from './roles-api.interface'
 
 export default class RolesApiService {
   static async createRole (roleInfo: IRole): Promise<IRole> {
-    return await MainApiService.fetchApi('/roles/create-role', 'POST', roleInfo)
+    return await MainApiService.fetchApi('/roles', 'POST', roleInfo)
   }
 
   static async getRole (role_id: string): Promise<IRole> {
-    return await MainApiService.fetchApi(`/roles/get-role/${role_id}`)
+    return await MainApiService.fetchApi(`/roles/${role_id}`)
   }
 
   static async getAllRoles (): Promise<IRole[]> {
-    return await MainApiService.fetchApi('/roles/get-roles')
+    return await MainApiService.fetchApi('/roles')
   }
 
-  static async updateRole (roleInfo: IRole): Promise<IRole> {
-    return await MainApiService.fetchApi('/roles/update-role', 'PATCH', roleInfo)
+  static async updateRole (role_id: string, roleInfo: IRole): Promise<IRole> {
+    return await MainApiService.fetchApi(`/roles/${role_id}`, 'PATCH', roleInfo)
   }
 
   static async deleteRole (roleInfo: { role_id: string }): Promise<{ deleted: boolean }> {
@@ -23,7 +23,7 @@ export default class RolesApiService {
   }
 
   static async getBasePermissions (): Promise<IPermission[]> {
-    return await MainApiService.fetchApi('/permissions/get-base-permissions')
+    return await MainApiService.fetchApi('/permissions')
   }
 
 }

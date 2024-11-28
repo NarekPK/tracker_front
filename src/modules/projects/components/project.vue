@@ -201,12 +201,14 @@ watch(() => project.value, async () => {
 async function onSubmit (event: Event) {
   event.preventDefault()
   try {
-    projectsStore.project = await ProjectsApiService.updateProject({
-      name: projectName.value,
-      description: projectDescription.value,
-      project_owner: projectOwner.value?.value,
-      project_id: project.value?.project_id
-    })
+    projectsStore.project = await ProjectsApiService.updateProject(
+      project.value?.project_id as string,
+      {
+        name: projectName.value,
+        description: projectDescription.value,
+        project_owner: projectOwner.value?.value
+      }
+    )
     $q.notify({
       color: 'primary',
       textColor: 'white',
@@ -253,11 +255,13 @@ async function onAddProjectRoleSubmit () {
     })
   } else {
   try {
-      await ProjectsApiService.addProjectRole({
-        project_id: project.value?.project_id,
-        role_id: roleToProvide.value?.value,
-        user_id: userToProvide.value?.value
-      })
+      await ProjectsApiService.addProjectRole(
+        project.value?.project_id as string,
+        {
+          role_id: roleToProvide.value?.value,
+          user_id: userToProvide.value?.value
+        }
+      )
       $q.notify({
         color: 'primary',
         textColor: 'white',
@@ -336,7 +340,7 @@ async function onDeleteProjectRoleSubmit () {
       }
     })
   try {
-    await ProjectsApiService.deleteProjectRoles(selectedUsersPrepared)
+    await ProjectsApiService.deleteProjectRoles(route.params.id as string, selectedUsersPrepared)
     $q.notify({
       color: 'primary',
       textColor: 'white',

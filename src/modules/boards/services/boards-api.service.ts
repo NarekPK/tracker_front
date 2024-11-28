@@ -3,23 +3,23 @@ import { IBoard } from './boards-api.interface'
 
 export default class BoardsApiService {
   static async createBoard (boardInfo: IBoard): Promise<IBoard> {
-    return await MainApiService.fetchApi('/boards/create-board', 'POST', boardInfo)
-  }
-
-  static async getBoard (board_id: string): Promise<IBoard> {
-    return await MainApiService.fetchApi(`/boards/get-board/${board_id}`)
+    return await MainApiService.fetchApi('/boards', 'POST', boardInfo)
   }
 
   static async getAllBoards (): Promise<IBoard[]> {
-    return await MainApiService.fetchApi('/boards/get-boards')
+    return await MainApiService.fetchApi('/boards')
   }
 
-  static async updateBoard (boardInfo: IBoard): Promise<IBoard> {
-    return await MainApiService.fetchApi('/boards/update-board', 'PATCH', boardInfo)
+  static async getBoard (board_id: string): Promise<IBoard> {
+    return await MainApiService.fetchApi(`/boards/${board_id}`)
   }
 
-  static async deleteBoard (boardInfo: { board_id: string }): Promise<{ deleted: boolean }> {
-    return await MainApiService.fetchApi('/boards/delete-board', 'DELETE', boardInfo)
+  static async updateBoard (board_id: string, boardInfo: IBoard): Promise<IBoard> {
+    return await MainApiService.fetchApi(`/boards/${board_id}`, 'PATCH', boardInfo)
+  }
+
+  static async deleteBoard (board_id: string): Promise<{ deleted: boolean }> {
+    return await MainApiService.fetchApi(`/boards/${board_id}`, 'DELETE')
   }
 
 }

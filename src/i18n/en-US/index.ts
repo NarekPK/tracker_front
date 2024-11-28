@@ -15,6 +15,7 @@ export default {
   'ROLE': 'Role',
 
   'SAVE': 'Save',
+  'EDIT': 'Edit',
   'SIGN_IN': 'Sign in',
   'CREATE_ACCOUNT': 'Create an account',
   'PASSWORD': 'Password',
@@ -145,7 +146,9 @@ export default {
   },
   'BOARD_CREATED': 'The board has been created',
   'BOARD_DELETED': 'The board has been deleted',
+  'BOARD_SETTINGS': 'Board settings',
 
+  'CREATE_NEW_FIELD': 'Create a new field',
   'CUSTOM_FIELDS': 'Custom fields',
   'CUSTOM_FIELD': 'Custom field',
   'NEW_CUSTOM_FIELD': 'New field',
@@ -154,6 +157,7 @@ export default {
     'text': 'After confirming this action, the field {selected} will be deleted'
   },
   'EDIT_CUSTOM_FIELD': 'Edit field',
+  'CUSTOM_FIELD_DELETED': 'The field has been deleted',
   'DEFAULT_VALUE': 'Default value',
   'NO_VALUE': 'No value',
   'EMPTY_VALUE': 'Empty value',
