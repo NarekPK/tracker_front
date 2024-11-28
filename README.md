@@ -1,8 +1,10 @@
 # tracker
-http://79.174.82.97:9000/
 
-tracker
+### Tracker: http://narekio.online/
 
+### Docs: http://narekio.online:7000/api/docs/
+
+  
 ## Install the dependencies
 ```bash
 yarn

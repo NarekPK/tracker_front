@@ -50,35 +50,11 @@
 
     <q-dialog v-model="showNewFieldDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_USER') }}</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_FIELD') }}</div>
         <q-form
           @submit="onAddFieldSubmit"
           class="new-custom-field-form"
         >
-          <q-input
-            v-model="email"
-            label="Email"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || t('ENTER_EMAIL') ]"
-            bottom-slots
-          />
-
-          <q-input
-            type="password"
-            v-model="password"
-            :label="t('PASSWORD')"
-            lazy-rules
-            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
-          />
-
-          <q-input
-            type="password"
-            v-model="confirmationPassword"
-            :label="t('CONFIRM_PASSWORD')"
-            lazy-rules
-            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
-          />
-
           <div class="flex q-mt-lg">
             <q-btn :label="t('CREATE')" type="submit" color="primary" class="text-bold q-mr-md" />
             <q-btn :label="t('CANCEL')" v-close-popup/>
@@ -89,37 +65,14 @@
 
     <q-dialog v-model="showEditFieldDialog">
       <q-card class="q-pa-lg">
-        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_USER') }}</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('EDIT_CUSTOM_FIELD') }}</div>
         <q-form
           @submit="onAddFieldSubmit"
           class="new-custom-field-form"
         >
-          <q-input
-            v-model="email"
-            label="Email"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || t('ENTER_EMAIL') ]"
-            bottom-slots
-          />
-
-          <q-input
-            type="password"
-            v-model="password"
-            :label="t('PASSWORD')"
-            lazy-rules
-            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
-          />
-
-          <q-input
-            type="password"
-            v-model="confirmationPassword"
-            :label="t('CONFIRM_PASSWORD')"
-            lazy-rules
-            :rules="[ val => val && val.length >= 6 || t('MIN_PASSWORD') ]"
-          />
 
           <div class="flex q-mt-lg">
-            <q-btn :label="t('CREATE')" type="submit" color="primary" class="text-bold q-mr-md" />
+            <q-btn :label="t('EDIT')" type="submit" color="primary" class="text-bold q-mr-md" />
             <q-btn :label="t('CANCEL')" v-close-popup/>
           </div>
         </q-form>
@@ -225,38 +178,28 @@ const me = computed(() => usersStore.me) */
 const showNewFieldDialog = ref(false)
 
 async function onAddFieldSubmit () {
-  if (password.value !== confirmationPassword.value) {
+  try {
+    // if (!email.value || !password.value || !confirmationPassword.value) return
+    // await UsersApiService.createUser({
+    //   email: email.value,
+    //   password: password.value,
+    //   confirmation_password: confirmationPassword.value,
+    //   workspace_id: me.value?.workspace_id
+    // })
+    // $q.notify({
+    //   color: 'primary',
+    //   textColor: 'white',
+    //   icon: 'check_circle',
+    //   message: t('USER_DELETED')
+    // })
+    // usersStore.getAllUsers()
+  } catch (e) {
     $q.notify({
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: t('PASSWORDS_MATCH')
+      message: e.message
     })
-  }
-  else {
-    try {
-      if (!email.value || !password.value || !confirmationPassword.value) return
-      await UsersApiService.createUser({
-        email: email.value,
-        password: password.value,
-        confirmation_password: confirmationPassword.value,
-        workspace_id: me.value?.workspace_id
-      })
-      $q.notify({
-        color: 'primary',
-        textColor: 'white',
-        icon: 'check_circle',
-        message: t('USER_DELETED')
-      })
-      // usersStore.getAllUsers()
-    } catch (e) {
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: e.message
-      })
-    }
   }
 
   showNewFieldDialog.value = false
@@ -276,12 +219,12 @@ const showDeleteFieldDialog = ref(false)
 async function onDeleteFieldSubmit () {
   try {
     if (!selected.value[0]?.custom_field_id) return
-    await CustomFieldsApiService.deleteCustomField({ custom_field_id: selected.value[0].custom_field_id })
+    await CustomFieldsApiService.deleteCustomField(selected.value[0].custom_field_id)
     $q.notify({
       color: 'primary',
       textColor: 'white',
       icon: 'check_circle',
-      message: t('USER_DELETED')
+      message: t('CUSTOM_FIELD_DELETED')
     })
     getAllCustomFields()
   } catch (e) {

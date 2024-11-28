@@ -251,14 +251,16 @@ function getProjectCustomFields (project_id: string) {
 
 async function updateFieldValue ({ id, value, option_id }: IIssueCustomField, issue: IIssue) {
   try {
-    const newCustomFields =[
+    const newCustomFields = [
       ...issue.custom_fields.filter(f => f.id !== id) ?? [],
       option_id ? { id, value, option_id } : { id, value }
     ]
-    await IssuesApiService.updateIssue({
-      custom_fields: newCustomFields,
-      issue_id: issue.issue_id
-    })
+    await IssuesApiService.updateIssue(
+      issue.issue_id as string,
+      {
+        custom_fields: newCustomFields
+      }
+    )
     if (issue) issue.custom_fields = newCustomFields
     $q.notify({
       color: 'primary',

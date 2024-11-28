@@ -159,7 +159,7 @@ import { useBoardsStore } from 'src/modules/boards/boards-store'
 import { useUsersStore } from 'src/modules/users/users-store'
 import { useRoute } from 'vue-router'
 import { useRolesStore } from 'src/modules/roles/roles-store'
-import { IBoardUserRole } from 'src/modules/boards/services/boards-api.interface'
+// import { IBoardUserRole } from 'src/modules/boards/services/boards-api.interface'
 import { useI18n } from 'vue-i18n'
 
 
@@ -188,25 +188,27 @@ const boardOwner = ref<TUserOption | null>(null)
 const isChanged = computed(() => {
   return boardName.value !== board.value?.name ||
     boardDescription.value !== board.value?.description ||
-    boardOwner.value?.label !== usersOptions.value.find(o => o.value === board.value?.board_owner)?.label
+    // boardOwner.value?.label !== usersOptions.value.find(o => o.value === board.value?.board_owner)?.label
 })
 
 watch(() => board.value, async () => {
   await usersStore.getAllUsers()
   boardName.value = board.value?.name || ''
   boardDescription.value = board.value?.description || null
-  boardOwner.value = usersOptions.value.find(u => u.value === board.value?.board_owner) || null
+  // boardOwner.value = usersOptions.value.find(u => u.value === board.value?.board_owner) || null
 })
 
 async function onSubmit (event: Event) {
   event.preventDefault()
   try {
-    boardsStore.board = await BoardsApiService.updateBoard({
-      name: boardName.value,
-      description: boardDescription.value,
-      board_owner: boardOwner.value?.value,
-      board_id: board.value?.board_id
-    })
+    boardsStore.board = await BoardsApiService.updateBoard(
+      board.value?.board_id as string,
+      {
+        name: boardName.value,
+        description: boardDescription.value,
+        // board_owner: boardOwner.value?.value
+      }
+    )
     $q.notify({
       color: 'primary',
       textColor: 'white',

@@ -194,10 +194,12 @@ function cancelCommentUpdate () {
 
 async function onUpdateIssueComment (comment_id: string) {
   try {
-    await IssuesApiService.updateIssueComment({
-      text: commentTextToUpdate.value,
-      comment_id
-    })
+    await IssuesApiService.updateIssueComment(
+      comment_id,
+      {
+        text: commentTextToUpdate.value
+      }
+    )
     $q.notify({
       color: 'primary',
       textColor: 'white',
@@ -229,7 +231,7 @@ function handleDeleteComment (commentId: string = '') {
 async function onDeleteCommentSubmit (event: Event) {
   event.preventDefault()
   try {
-    await IssuesApiService.deleteIssueComment({ comment_id: toDeleteCommentId.value })
+    await IssuesApiService.deleteIssueComment(toDeleteCommentId.value)
     getIssueComments()
     showDeleteCommentDialog.value = false
     $q.notify({

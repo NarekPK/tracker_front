@@ -1,6 +1,7 @@
 export interface IBoard {
   board_id?: string
   name?: string
+  description?: string | null
   columns_field_id?: string
   columns_options?: TBoardEnumOption[]
   rows_field_id?: string

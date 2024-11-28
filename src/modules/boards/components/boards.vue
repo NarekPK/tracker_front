@@ -52,12 +52,12 @@
             @click="showDeleteBoardDialog = true"
           />
           <q-btn
-            :title="t('DELETE_BOARD')"
+            :title="t('BOARD_SETTINGS')"
             icon="settings"
             class="boards-head__button text-bold"
             rounded
             padding="5px"
-            @click="showDeleteBoardDialog = true"
+            @click="showBoardSettingsDialog = true"
           />
         </div>
       </template>
@@ -68,7 +68,7 @@
     />
     <q-dialog v-model="showNewBoardDialog">
       <q-card class="q-pa-lg form-wrapper">
-        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_PROJECT') }}</div>
+        <div class="text-h6 text-bold q-mb-md">{{ t('CREATE_NEW_BOARD') }}</div>
         <q-form
           @submit="onAddBoardSubmit"
           class="new-board-form"
@@ -194,7 +194,7 @@ const showDeleteBoardDialog = ref(false)
 
 async function onDeleteBoardSubmit () {
   try {
-    await BoardsApiService.deleteBoard({ board_id: currentBoardInfo.value?.board_id as string })
+    await BoardsApiService.deleteBoard(currentBoardInfo.value?.board_id as string)
     $q.notify({
       color: 'primary',
       textColor: 'white',
@@ -213,6 +213,8 @@ async function onDeleteBoardSubmit () {
 
   showDeleteBoardDialog.value = false
 }
+
+const showBoardSettingsDialog = ref(false)
 
 </script>
 

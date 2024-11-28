@@ -15,6 +15,7 @@ export default {
   'ROLE': 'Роль',
 
   'SAVE': 'Сохранить',
+  'EDIT': 'Редактировать',
   'SIGN_IN': 'Войти',
   'CREATE_ACCOUNT': 'Зарегистрироваться',
   'PASSWORD': 'Пароль',
@@ -144,7 +145,9 @@ export default {
   },
   'BOARD_CREATED': 'Доска создана',
   'BOARD_DELETED': 'Доска удалена',
+  'BOARD_SETTINGS': 'Настройки доски',
 
+  'CREATE_NEW_FIELD': 'Создать новое поле',
   'CUSTOM_FIELDS': 'Кастомные поля',
   'CUSTOM_FIELD': 'Кастомное поле',
   'NEW_CUSTOM_FIELD': 'Новое поле',
@@ -153,6 +156,7 @@ export default {
     'text': 'После подтверждения этого действия поле {selected} будет удалено'
   },
   'EDIT_CUSTOM_FIELD': 'Редактировать поле',
+  'CUSTOM_FIELD_DELETED': 'Поле удалено',
   'DEFAULT_VALUE': 'Значение по умолчанию',
   'NO_VALUE': 'Нет значения',
   'EMPTY_VALUE': 'Пустое значение',

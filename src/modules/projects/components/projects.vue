@@ -181,7 +181,7 @@ const showDeleteProjectDialog = ref(false)
 async function onDeleteProjectSubmit () {
   try {
     if (!selected.value[0]?.project_id) return
-    await ProjectsApiService.deleteProject({ project_id: selected.value[0].project_id })
+    await ProjectsApiService.deleteProject(selected.value[0].project_id)
     $q.notify({
       color: 'primary',
       textColor: 'white',

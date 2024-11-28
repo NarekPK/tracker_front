@@ -198,7 +198,7 @@ const showDeleteUserDialog = ref(false)
 async function onDeleteUserSubmit () {
   try {
     if (!selected.value[0]?.user_id) return
-    await UsersApiService.deleteUser({ user_id: selected.value[0].user_id })
+    await UsersApiService.deleteUser(selected.value[0].user_id)
     $q.notify({
       color: 'primary',
       textColor: 'white',
